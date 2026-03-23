@@ -227,7 +227,7 @@ function logout() {
 }
 
 function loadData() {
-  if (SCRIPT_URL === 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
+  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
     groups = getDemoGroups();
   } else {
     fetch(`${SCRIPT_URL}?action=getAllGroups`)
