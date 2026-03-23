@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admina – Kamila & Piotr RSVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --rose: #c4748a; --rose-light: #f7e8ed; --rose-mid: #e8b4c2;
+    --gold: #b8973a; --gold-light: #f5edd8; --gold-mid: #d4b96a;
+    --cream: #fdf8f4; --text: #2d2020; --text-muted: #8a7070;
+    --white: #ffffff; --border: rgba(180,130,110,0.2);
+    --green: #2d7a48; --green-bg: #e8f5ec; --green-border: #85c99a;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  /* Login */
+  .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+  .login-box { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 2.5rem; max-width: 380px; width: 100%; text-align: center; }
+  .login-box h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 0.25rem; }
+  .login-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.75rem; }
+  .input-field {
+    width: 100%; padding: 0.65rem 0.9rem; border: 0.5px solid var(--border); border-radius: 8px;
+    font-family: 'Jost', sans-serif; font-size: 0.9rem; background: var(--cream);
+    color: var(--text); outline: none; margin-bottom: 0.75rem; transition: border-color 0.15s;
+  }
+  .input-field:focus { border-color: var(--rose-mid); }
+  .btn-primary {
+    width: 100%; padding: 0.75rem; border: none; border-radius: 10px;
+    background: var(--rose); color: white; font-family: 'Jost', sans-serif;
+    font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #b36379; }
+
+  /* Layout */
+  .app { display: none; }
+  .app.visible { display: block; }
+  header {
+    background: var(--white); border-bottom: 0.5px solid var(--border);
+    padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 10;
+  }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--rose); }
+  header span { font-size: 0.78rem; color: var(--text-muted); }
+  .logout-btn { font-size: 0.78rem; color: var(--text-muted); cursor: pointer; background: none; border: none; font-family: 'Jost', sans-serif; }
+  .logout-btn:hover { color: var(--rose); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card {
+    background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
+    padding: 1rem 1.1rem;
+  }
+  .stat-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-value.rose { color: var(--rose); }
+  .stat-value.green { color: var(--green); }
+  .stat-value.gold { color: var(--gold); }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0; }
+  .tab-btn {
+    padding: 0.6rem 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.83rem;
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: all 0.15s;
+    font-weight: 400;
+  }
+  .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); font-weight: 500; }
+
+  /* Group list */
+  .group-card {
+    background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
+    margin-bottom: 0.875rem; overflow: hidden;
+  }
+  .group-header {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 1rem 1.25rem; cursor: pointer; flex-wrap: wrap; gap: 8px;
+  }
+  .group-name { font-size: 0.95rem; font-weight: 500; }
+  .group-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .group-actions { display: flex; align-items: center; gap: 8px; }
+  .badge {
+    font-size: 0.68rem; padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 500; letter-spacing: 0.05em;
+  }
+  .badge.yes { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
+  .badge.no { background: var(--rose-light); color: var(--rose); border: 0.5px solid var(--rose-mid); }
+  .badge.pending { background: var(--gold-light); color: var(--gold); border: 0.5px solid var(--gold-mid); }
+  .btn-sm {
+    padding: 0.3rem 0.75rem; border-radius: 8px; border: 0.5px solid var(--border);
+    font-family: 'Jost', sans-serif; font-size: 0.75rem; cursor: pointer;
+    background: transparent; color: var(--text-muted); transition: all 0.15s;
+  }
+  .btn-sm:hover { background: var(--cream); color: var(--text); }
+  .btn-sm.rose { border-color: var(--rose-mid); color: var(--rose); }
+  .btn-sm.rose:hover { background: var(--rose-light); }
+
+  .group-details { display: none; padding: 0 1.25rem 1.25rem; border-top: 0.5px solid var(--border); }
+  .group-details.open { display: block; }
+
+  .guest-row {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 0.75rem 0; border-bottom: 0.5px solid var(--border); gap: 12px; flex-wrap: wrap;
+  }
+  .guest-row:last-child { border-bottom: none; }
+  .guest-row-name { font-size: 0.88rem; font-weight: 500; }
+  .guest-row-diet { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+  .guest-row-notes { font-size: 0.75rem; color: var(--rose); margin-top: 2px; font-style: italic; }
+
+  /* QR */
+  .qr-section { margin-top: 1rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
+  .qr-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .qr-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .qr-box { background: white; padding: 8px; border-radius: 8px; border: 0.5px solid var(--border); display: inline-block; }
+  .qr-link { font-size: 0.78rem; color: var(--text-muted); word-break: break-all; }
+  .qr-link strong { display: block; font-size: 0.88rem; color: var(--rose); font-weight: 500; margin-bottom: 2px; }
+
+  /* Add group */
+  .add-form {
+    background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
+    padding: 1.5rem; margin-bottom: 1rem;
+  }
+  .add-form h3 { font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; color: var(--text); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-group label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
+  .guests-builder { margin: 10px 0; }
+  .guest-input-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .guest-input-row input, .guest-input-row select { flex: 1; }
+  .guest-input-row select { max-width: 110px; }
+  .remove-guest { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 4px; }
+  .remove-guest:hover { color: var(--rose); }
+  .add-guest-btn { font-size: 0.78rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; padding: 0; }
+  .add-guest-btn:hover { text-decoration: underline; }
+
+  /* Responses tab */
+  .responses-table { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); overflow: hidden; }
+  .responses-table table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  .responses-table th { padding: 0.6rem 0.9rem; text-align: left; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); border-bottom: 0.5px solid var(--border); font-weight: 500; }
+  .responses-table td { padding: 0.65rem 0.9rem; border-bottom: 0.5px solid var(--border); vertical-align: top; }
+  .responses-table tr:last-child td { border-bottom: none; }
+  .responses-table tr:hover td { background: var(--cream); }
+
+  .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.88rem; }
+
+  /* Settings */
+  .settings-card { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+  .settings-card h3 { font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; }
+  .setting-row { margin-bottom: 0.75rem; }
+  .setting-row label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
+  .copy-btn { font-size: 0.75rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; margin-left: 8px; }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <h1>Panel Admina</h1>
+    <p>Kamila & Piotr — RSVP</p>
+    <input class="input-field" type="password" id="password-input" placeholder="Hasło dostępu" onkeydown="if(event.key==='Enter')login()">
+    <button class="btn-primary" onclick="login()">Zaloguj się</button>
+    <p id="login-err" style="font-size:0.78rem;color:var(--rose);margin-top:0.75rem;display:none">Nieprawidłowe hasło</p>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app" id="app">
+  <header>
+    <div>
+      <h1>Kamila & Piotr — Admin</h1>
+      <span>System RSVP</span>
+    </div>
+    <button class="logout-btn" onclick="logout()">Wyloguj</button>
+  </header>
+  <main>
+    <!-- Stats -->
+    <div class="stats-grid" id="stats-grid"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('groups', this)">Grupy gości</button>
+      <button class="tab-btn" onclick="switchTab('responses', this)">Odpowiedzi</button>
+      <button class="tab-btn" onclick="switchTab('add', this)">Dodaj grupę</button>
+      <button class="tab-btn" onclick="switchTab('settings', this)">Ustawienia</button>
+    </div>
+
+    <div id="tab-groups"></div>
+    <div id="tab-responses" style="display:none"></div>
+    <div id="tab-add" style="display:none"></div>
+    <div id="tab-settings" style="display:none"></div>
+  </main>
+</div>
+
+<script>
+const ADMIN_PASSWORD = 'wesele2027';
+const RSVP_BASE_URL = window.location.origin + window.location.pathname.replace('admin.html','index.html');
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec';
+
+let groups = [];
+let newGuests = [{ name: '', type: 'adult' }];
+
+function login() {
+  const pw = document.getElementById('password-input').value;
+  if (pw === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').classList.add('visible');
+    loadData();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('password-input').value = '';
+}
+
+function loadData() {
+  if (SCRIPT_URL === 'PASTE_YOUR_APPS_SCRIPT_URL_HERE') {
+    groups = getDemoGroups();
+  } else {
+    fetch(`${SCRIPT_URL}?action=getAllGroups`)
+      .then(r => r.json())
+      .then(data => { groups = data; renderAll(); })
+      .catch(() => { groups = getDemoGroups(); renderAll(); });
+    return;
+  }
+  renderAll();
+}
+
+function getDemoGroups() {
+  return [
+    { id: 'grp1', groupName: 'Rodzina Kowalskich', code: 'KOW123', submittedAt: '2026-11-15 14:32',
+      musicDedication: 'Bohemian Rhapsody', message: 'Nie możemy się doczekać!',
+      guests: [
+        { id:'g1', name:'Anna Kowalska', type:'adult', rsvp:'yes', diet:'Bez glutenu', notes:'' },
+        { id:'g2', name:'Jan Kowalski', type:'adult', rsvp:'yes', diet:'Bez alkoholu', notes:'' },
+        { id:'g3', name:'Zosia Kowalska', type:'child', rsvp:'yes', diet:'', notes:'', childAge:'7' }
+      ]},
+    { id: 'grp2', groupName: 'Nowakowie', code: 'NOW456', submittedAt: null,
+      musicDedication: '', message: '',
+      guests: [
+        { id:'g4', name:'Maria Nowak', type:'adult', rsvp:null, diet:'', notes:'' },
+        { id:'g5', name:'Tomasz Nowak', type:'adult', rsvp:null, diet:'', notes:'' }
+      ]},
+    { id: 'grp3', groupName: 'Wiśniewska Ewa', code: 'WIS789', submittedAt: '2026-11-20 09:11',
+      musicDedication: '', message: '',
+      guests: [
+        { id:'g6', name:'Ewa Wiśniewska', type:'adult', rsvp:'no', diet:'', notes:'Będę na urlopie, przepraszam!' }
+      ]}
+  ];
+}
+
+function renderAll() {
+  renderStats();
+  renderGroups();
+  renderResponses();
+  renderSettings();
+}
+
+function renderStats() {
+  const allGuests = groups.flatMap(g => g.guests);
+  const yes = allGuests.filter(g => g.rsvp === 'yes').length;
+  const no = allGuests.filter(g => g.rsvp === 'no').length;
+  const pending = allGuests.filter(g => !g.rsvp).length;
+  const responded = groups.filter(g => g.submittedAt).length;
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Wszystkich gości</div><div class="stat-value">${allGuests.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Potwierdzonych</div><div class="stat-value green">${yes}</div></div>
+    <div class="stat-card"><div class="stat-label">Nie będzie</div><div class="stat-value rose">${no}</div></div>
+    <div class="stat-card"><div class="stat-label">Oczekuje</div><div class="stat-value gold">${pending}</div></div>
+    <div class="stat-card"><div class="stat-label">Grup łącznie</div><div class="stat-value">${groups.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Odpowiedziało</div><div class="stat-value">${responded}</div></div>
+  `;
+}
+
+function renderGroups() {
+  const el = document.getElementById('tab-groups');
+  if (!groups.length) { el.innerHTML = '<div class="empty-state">Brak grup. Dodaj pierwszą grupę gości.</div>'; return; }
+  el.innerHTML = groups.map(g => {
+    const yes = g.guests.filter(x => x.rsvp === 'yes').length;
+    const no = g.guests.filter(x => x.rsvp === 'no').length;
+    const pending = g.guests.filter(x => !x.rsvp).length;
+    const statusBadge = g.submittedAt
+      ? `<span class="badge yes">Odpowiedziano</span>`
+      : `<span class="badge pending">Oczekuje</span>`;
+    const guestRows = g.guests.map(guest => `
+      <div class="guest-row">
+        <div>
+          <div class="guest-row-name">${escHtml(guest.name)} ${guest.type === 'child' ? `<span style="font-size:0.7rem;color:var(--gold)">dziecko${guest.childAge ? ' ('+guest.childAge+' lat)':''}</span>` : guest.type === 'plus1' ? `<span style="font-size:0.7rem;color:#7c68c4">+1 / osoba towarzysząca</span>` : ''}</div>
+          ${guest.diet ? `<div class="guest-row-diet">${escHtml(guest.diet)}</div>` : ''}
+          ${guest.notes ? `<div class="guest-row-notes">${escHtml(guest.notes)}</div>` : ''}
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${guest.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : guest.rsvp === 'no' ? '<span class="badge no">Nie będę</span>' : '<span class="badge pending">?</span>'}
+        </div>
+      </div>
+    `).join('');
+    const rsvpLink = `${RSVP_BASE_URL}?kod=${g.code}`;
+    return `
+      <div class="group-card">
+        <div class="group-header" onclick="toggleGroup('${g.id}')">
+          <div>
+            <div class="group-name">${escHtml(g.groupName)}</div>
+            <div class="group-meta">${g.guests.length} os. · ${yes} będą · ${pending} oczekuje · kod: <strong>${g.code}</strong></div>
+          </div>
+          <div class="group-actions">
+            ${statusBadge}
+            <button class="btn-sm" onclick="event.stopPropagation();copyLink('${rsvpLink}')">Kopiuj link</button>
+          </div>
+        </div>
+        <div class="group-details" id="details-${g.id}">
+          ${guestRows}
+          ${g.musicDedication || g.message ? `
+            <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:0.5px solid var(--border)">
+              ${g.musicDedication ? `<p style="font-size:0.8rem;color:var(--text-muted)">🎵 ${escHtml(g.musicDedication)}</p>` : ''}
+              ${g.message ? `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:4px">✉️ ${escHtml(g.message)}</p>` : ''}
+            </div>
+          ` : ''}
+          <div class="qr-section">
+            <div class="qr-label">Kod QR i link dla tej grupy</div>
+            <div class="qr-row">
+              <div class="qr-box" id="qr-${g.id}"></div>
+              <div class="qr-link">
+                <strong>Kod: ${g.code}</strong>
+                ${rsvpLink}
+                <br><button class="btn-sm rose" style="margin-top:6px" onclick="copyLink('${rsvpLink}')">Kopiuj link</button>
+                <button class="btn-sm" style="margin-top:6px;margin-left:4px" onclick="downloadQR('${g.id}','${g.groupName}')">Pobierz QR</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  groups.forEach(g => {
+    setTimeout(() => {
+      const el = document.getElementById(`qr-${g.id}`);
+      if (el && !el.querySelector('canvas')) {
+        try {
+          new QRCode(el, {
+            text: `${RSVP_BASE_URL}?kod=${g.code}`,
+            width: 100, height: 100, colorDark: '#2d2020', colorLight: '#ffffff'
+          });
+        } catch(e) {}
+      }
+    }, 100);
+  });
+}
+
+function toggleGroup(id) {
+  const el = document.getElementById(`details-${id}`);
+  el.classList.toggle('open');
+}
+
+function renderResponses() {
+  const el = document.getElementById('tab-responses');
+  const allGuests = groups.flatMap(g => g.guests.map(guest => ({
+    ...guest,
+    groupName: g.groupName,
+    submittedAt: g.submittedAt,
+    musicDedication: g.musicDedication,
+    message: g.message
+  }))).filter(g => g.rsvp);
+
+  if (!allGuests.length) {
+    el.innerHTML = '<div class="empty-state">Brak odpowiedzi jeszcze.</div>';
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="responses-table">
+      <table>
+        <thead><tr>
+          <th>Imię i nazwisko</th><th>Grupa</th><th>Odpowiedź</th>
+          <th>Dieta</th><th>Uwagi</th><th>Data</th>
+        </tr></thead>
+        <tbody>
+          ${allGuests.map(g => `
+            <tr>
+              <td>${escHtml(g.name)}${g.type==='child'?` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>`:g.type==='plus1'?` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>`:''}</td>
+              <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
+              <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
+              <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(g.diet||'—')}</td>
+              <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes||'—')}</td>
+              <td style="color:var(--text-muted);font-size:0.75rem">${g.submittedAt||'—'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderSettings() {
+  const el = document.getElementById('tab-settings');
+  el.innerHTML = `
+    <div class="settings-card">
+      <h3>Konfiguracja systemu</h3>
+      <div class="setting-row">
+        <label>URL strony RSVP (do ustawienia w index.html)</label>
+        <input class="input-field" value="${RSVP_BASE_URL}" readonly>
+      </div>
+      <div class="setting-row">
+        <label>Google Apps Script URL</label>
+        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec">
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec</p>
+      </div>
+    </div>
+    <div class="settings-card">
+      <h3>Eksport danych</h3>
+      <button class="btn-primary" style="width:auto;padding:0.6rem 1.25rem" onclick="exportCSV()">Pobierz CSV z odpowiedziami</button>
+    </div>
+    <div class="settings-card">
+      <h3>Instrukcja</h3>
+      <ol style="padding-left:1.25rem;font-size:0.85rem;line-height:2;color:var(--text-muted)">
+        <li>Skopiuj kod Apps Script z pliku <code>apps-script.gs</code> do Google Apps Script</li>
+        <li>Opublikuj jako aplikację webową (dostęp: wszyscy)</li>
+        <li>Wklej URL skryptu w obu plikach HTML (<code>PASTE_YOUR_APPS_SCRIPT_URL_HERE</code>)</li>
+        <li>Wgraj pliki na hosting (GitHub Pages, Netlify — darmowe)</li>
+        <li>Dodaj grupy gości → kopiuj linki / drukuj QR kody → wyślij gościom</li>
+      </ol>
+    </div>
+  `;
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['groups','responses','add','settings'].forEach(t => {
+    document.getElementById(`tab-${t}`).style.display = t === name ? 'block' : 'none';
+  });
+  if (name === 'add') renderAddForm();
+}
+
+function renderAddForm() {
+  const el = document.getElementById('tab-add');
+  const guestInputs = newGuests.map((g,i) => `
+    <div class="guest-input-row">
+      <input class="input-field" style="margin-bottom:0" placeholder="Imię i nazwisko" value="${escHtml(g.name)}" oninput="updateNewGuest(${i},'name',this.value)">
+      <select class="input-field" style="margin-bottom:0;max-width:140px" onchange="updateNewGuest(${i},'type',this.value)">
+        <option value="adult" ${g.type==='adult'?'selected':''}>Dorosły</option>
+        <option value="plus1" ${g.type==='plus1'?'selected':''}>Osoba towarzysząca</option>
+        <option value="child" ${g.type==='child'?'selected':''}>Dziecko</option>
+      </select>
+      <button class="remove-guest" onclick="removeNewGuest(${i})">×</button>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="add-form">
+      <h3>Nowa grupa gości</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nazwa grupy</label>
+          <input class="input-field" id="new-group-name" placeholder="np. Rodzina Kowalskich" style="margin-bottom:0">
+        </div>
+        <div class="form-group">
+          <label>Kod (zostaw puste = auto)</label>
+          <input class="input-field" id="new-group-code" placeholder="np. KOW123" style="margin-bottom:0">
+        </div>
+      </div>
+      <div class="guests-builder">
+        <div class="form-group" style="margin-bottom:8px"><label>Goście w grupie</label></div>
+        ${guestInputs}
+        <button class="add-guest-btn" onclick="addNewGuestRow()">+ Dodaj osobę</button>
+      </div>
+      <button class="btn-primary" style="width:auto;padding:0.65rem 1.5rem;margin-top:0.75rem" onclick="saveGroup()">Zapisz grupę</button>
+      <p id="add-status" style="font-size:0.8rem;margin-top:0.5rem;display:none"></p>
+    </div>
+  `;
+}
+
+function updateNewGuest(i, field, val) { newGuests[i][field] = val; }
+
+function addNewGuestRow() {
+  const savedName = document.getElementById('new-group-name')?.value || '';
+  const savedCode = document.getElementById('new-group-code')?.value || '';
+  newGuests.push({ name: '', type: 'adult' });
+  renderAddForm();
+  document.getElementById('new-group-name').value = savedName;
+  document.getElementById('new-group-code').value = savedCode;
+}
+
+function removeNewGuest(i) {
+  if (newGuests.length <= 1) return;
+  const savedName = document.getElementById('new-group-name')?.value || '';
+  const savedCode = document.getElementById('new-group-code')?.value || '';
+  newGuests.splice(i, 1);
+  renderAddForm();
+  document.getElementById('new-group-name').value = savedName;
+  document.getElementById('new-group-code').value = savedCode;
+}
+
+function generateCode(name) {
+  const clean = name.replace(/\s+/g,'').toUpperCase().slice(0,3);
+  return clean + Math.floor(100 + Math.random() * 900);
+}
+
+async function saveGroup() {
+  const nameEl = document.getElementById('new-group-name');
+  const codeEl = document.getElementById('new-group-code');
+  const statusEl = document.getElementById('add-status');
+  const groupName = nameEl.value.trim();
+  if (!groupName) { alert('Podaj nazwę grupy'); return; }
+  const filledGuests = newGuests.filter(g => g.name.trim());
+  if (!filledGuests.length) { alert('Dodaj przynajmniej jedną osobę'); return; }
+  const code = codeEl.value.trim() || generateCode(groupName);
+  const newGroup = {
+    id: 'grp' + Date.now(), groupName, code,
+    submittedAt: null, musicDedication: '', message: '',
+    guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
+  };
+
+  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
+    try {
+      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addGroup', group: newGroup }) });
+    } catch(e) {}
+  }
+
+  groups.push(newGroup);
+  newGuests = [{ name: '', type: 'adult' }];
+  renderAll();
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--green)';
+  statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
+  setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+}
+
+function copyLink(url) {
+  navigator.clipboard.writeText(url).then(() => {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--text);color:white;padding:0.5rem 1.25rem;border-radius:20px;font-size:0.82rem;z-index:999;';
+    msg.textContent = 'Link skopiowany!';
+    document.body.appendChild(msg);
+    setTimeout(() => msg.remove(), 2000);
+  });
+}
+
+function downloadQR(groupId, groupName) {
+  const qrEl = document.getElementById(`qr-${groupId}`);
+  const canvas = qrEl ? qrEl.querySelector('canvas') : null;
+  if (!canvas) return;
+  const a = document.createElement('a');
+  a.download = `QR_${groupName.replace(/\s+/g,'_')}.png`;
+  a.href = canvas.toDataURL();
+  a.click();
+}
+
+function exportCSV() {
+  const rows = [['Imię i nazwisko','Typ','Grupa','Odpowiedź','Dieta','Uwagi','Wiek dziecka','Dedykacja muzyczna','Wiadomość','Data odpowiedzi']];
+  groups.forEach(g => {
+    g.guests.forEach(guest => {
+      rows.push([
+        guest.name, guest.type === 'child' ? 'Dziecko' : 'Dorosły',
+        g.groupName, guest.rsvp === 'yes' ? 'Będę' : guest.rsvp === 'no' ? 'Nie będę' : 'Oczekuje',
+        guest.diet||'', guest.notes||'', guest.childAge||'',
+        g.musicDedication||'', g.message||'', g.submittedAt||''
+      ]);
+    });
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'RSVP_Kamila_Piotr.csv';
+  a.click();
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamila & Piotr – RSVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c4748a;
+    --rose-light: #f7e8ed;
+    --rose-mid: #e8b4c2;
+    --gold: #b8973a;
+    --gold-light: #f5edd8;
+    --gold-mid: #d4b96a;
+    --cream: #fdf8f4;
+    --text: #2d2020;
+    --text-muted: #8a7070;
+    --white: #ffffff;
+    --border: rgba(180,130,110,0.18);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .bg-ornament {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: radial-gradient(circle at 15% 20%, rgba(196,116,138,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(184,151,58,0.07) 0%, transparent 50%);
+  }
+  .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem 4rem; position: relative; z-index: 1; }
+
+  /* Hero */
+  .hero { text-align: center; padding: 3.5rem 1rem 2rem; }
+  .monogram {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose-light), var(--gold-light));
+    border: 1.5px solid var(--rose-mid);
+    margin-bottom: 1.5rem;
+  }
+  .monogram span { font-family: 'Cormorant Garamond', serif; font-size: 26px; color: var(--rose); font-weight: 600; }
+  .hero-names { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 7vw, 3rem); font-weight: 300; color: var(--text); line-height: 1.1; letter-spacing: 0.01em; }
+  .hero-names em { font-style: italic; color: var(--rose); }
+  .divider-ornament { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 1rem 0; }
+  .divider-ornament::before, .divider-ornament::after { content: ''; flex: 1; max-width: 80px; height: 0.5px; background: var(--gold-mid); }
+  .divider-ornament span { color: var(--gold); font-size: 14px; }
+  .hero-date { font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); font-weight: 400; }
+  .hero-tagline { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--text-muted); margin-top: 0.75rem; line-height: 1.6; }
+
+  /* Cards */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border);
+    padding: 1.5rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .card-title {
+    font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--rose); font-weight: 500; margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title::after { content: ''; flex: 1; height: 0.5px; background: var(--rose-light); }
+
+  /* Event info */
+  .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  .event-box {
+    background: var(--cream); border-radius: 12px;
+    border: 0.5px solid var(--border); padding: 1rem 1rem 0;
+    display: flex; flex-direction: column;
+  }
+  .event-box-body { flex: 1; padding-bottom: 0.875rem; }
+  .event-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .event-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+  .event-detail { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+  .event-time { font-size: 0.85rem; color: var(--gold); font-weight: 500; margin-top: 0.3rem; }
+  .nav-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: calc(100% + 2rem); margin: 0 -1rem;
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--rose); text-decoration: none; font-family: 'Jost', sans-serif;
+    padding: 0.55rem 1rem; border-top: 0.5px solid var(--rose-mid);
+    background: transparent; transition: all 0.15s;
+    border-radius: 0 0 11px 11px;
+  }
+  .nav-btn:hover { background: var(--rose-light); }
+
+  /* Contact */
+  .contact-links { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0 0.75rem; }
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.55rem 1rem; border-radius: 10px;
+    background: var(--rose-light); border: 1px solid var(--rose-mid);
+    color: var(--rose); text-decoration: none;
+    font-size: 0.88rem; font-weight: 500; font-family: 'Jost', sans-serif;
+    transition: all 0.15s;
+  }
+  .contact-btn:hover { background: var(--rose); color: white; }
+  .contact-sign {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 1rem; color: var(--text-muted); margin-top: 0.25rem;
+  }
+
+  /* Timeline */
+  .timeline { padding: 0.25rem 0; }
+  .tl-item { display: flex; gap: 14px; align-items: flex-start; position: relative; padding-bottom: 1.25rem; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 40px; }
+  .tl-icon {
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: var(--rose-light); border: 1.5px solid var(--rose-mid); flex-shrink: 0; z-index: 1;
+  }
+  .tl-icon svg { width: 18px; height: 18px; stroke: var(--rose); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .tl-icon.gold-icon { background: var(--gold-light); border-color: var(--gold-mid); }
+  .tl-icon.gold-icon svg { stroke: var(--gold); }
+  .tl-line { width: 1.5px; flex: 1; background: var(--rose-light); min-height: 20px; margin-top: 4px; }
+  .tl-item:last-child .tl-line { display: none; }
+  .tl-content { padding-top: 8px; }
+  .tl-time { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 2px; }
+  .tl-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+  .tl-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+
+  /* Loading state */
+  .loading-state { text-align: center; padding: 3rem 1rem; }
+  .loading-state p { color: var(--text-muted); font-size: 0.9rem; }
+  .spinner { display: inline-block; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--rose-light); border-top-color: var(--rose); animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Error state */
+  .error-state { text-align: center; padding: 2rem 1rem; }
+  .error-state p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+
+  /* Guest section */
+  .guest-item {
+    border: 0.5px solid var(--border); border-radius: 12px;
+    padding: 1.1rem 1.1rem 1rem; margin-bottom: 0.875rem;
+    transition: border-color 0.2s;
+  }
+  .guest-item:last-child { margin-bottom: 0; }
+  .guest-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .guest-info { display: flex; align-items: center; gap: 10px; }
+  .guest-avatar {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    background: var(--rose-light); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: var(--rose);
+  }
+  .guest-avatar.child-avatar { background: var(--gold-light); color: var(--gold); }
+  .guest-avatar.plus1-avatar { background: #ede8f7; color: #7c68c4; border: 1.5px dashed #b5a8e0; }
+  .plus1-name-row { margin-bottom: 0.25rem; }
+  .guest-name { font-size: 0.95rem; font-weight: 500; }
+  .guest-tag { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; }
+
+  /* RSVP buttons */
+  .rsvp-btns { display: flex; gap: 6px; }
+  .btn-rsvp {
+    padding: 0.35rem 0.9rem; border-radius: 20px; border: 1px solid var(--border);
+    font-family: 'Jost', sans-serif; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; background: transparent; color: var(--text-muted);
+    letter-spacing: 0.03em;
+  }
+  .btn-rsvp:hover { background: var(--cream); }
+  .btn-rsvp.yes.active { background: #e8f5ec; border-color: #85c99a; color: #2d7a48; }
+  .btn-rsvp.no.active { background: var(--rose-light); border-color: var(--rose-mid); color: var(--rose); }
+
+  /* Diet tags */
+  .diet-section { margin-top: 0.875rem; padding-top: 0.875rem; border-top: 0.5px solid var(--border); }
+  .diet-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .diet-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .diet-tag {
+    padding: 0.25rem 0.7rem; border-radius: 20px; border: 1px solid var(--border);
+    font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+    background: transparent; color: var(--text-muted); font-family: 'Jost', sans-serif;
+  }
+  .diet-tag:hover { background: var(--cream); }
+  .diet-tag.active { background: var(--rose); border-color: var(--rose); color: white; }
+  .diet-notes {
+    margin-top: 0.6rem; width: 100%; padding: 0.55rem 0.75rem;
+    border: 0.5px solid var(--border); border-radius: 8px;
+    font-family: 'Jost', sans-serif; font-size: 0.82rem;
+    color: var(--text); background: var(--cream); resize: none; outline: none;
+    transition: border-color 0.15s; min-height: 52px;
+  }
+  .diet-notes:focus { border-color: var(--rose-mid); }
+  .diet-notes::placeholder { color: var(--text-muted); }
+
+  /* Child age */
+  .child-age-row { margin-top: 0.6rem; display: flex; align-items: center; gap: 8px; }
+  .child-age-row label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .child-age-input {
+    width: 60px; padding: 0.3rem 0.5rem; border: 0.5px solid var(--border); border-radius: 6px;
+    font-family: 'Jost', sans-serif; font-size: 0.85rem; background: var(--cream);
+    color: var(--text); outline: none; text-align: center;
+  }
+  .child-age-input:focus { border-color: var(--rose-mid); }
+
+  /* Extras section */
+  .extras-row { display: flex; flex-direction: column; gap: 0.75rem; }
+  .field-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; }
+  .text-input {
+    width: 100%; padding: 0.6rem 0.75rem;
+    border: 0.5px solid var(--border); border-radius: 8px;
+    font-family: 'Jost', sans-serif; font-size: 0.88rem;
+    color: var(--text); background: var(--cream); outline: none;
+    transition: border-color 0.15s;
+  }
+  .text-input:focus { border-color: var(--rose-mid); }
+  .text-input::placeholder { color: var(--text-muted); }
+  textarea.text-input { resize: none; min-height: 90px; line-height: 1.5; }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%; padding: 1rem; border: none; border-radius: var(--radius);
+    background: var(--rose); color: white; font-family: 'Jost', sans-serif;
+    font-size: 0.9rem; font-weight: 500; letter-spacing: 0.08em; cursor: pointer;
+    transition: all 0.2s; margin-top: 0.5rem;
+  }
+  .submit-btn:hover:not(:disabled) { background: #b36379; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  /* Success */
+  .success-state { text-align: center; padding: 3rem 1rem; }
+  .success-icon {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--rose-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem; font-size: 28px;
+  }
+  .success-state h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+  .success-state p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
+  .edit-link { display: inline-block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--rose); text-decoration: underline; cursor: pointer; }
+
+  /* Status message */
+  .status-msg {
+    padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; text-align: center;
+    margin-bottom: 0.75rem; display: none;
+  }
+  .status-msg.error { background: var(--rose-light); color: var(--rose); display: block; }
+  .status-msg.success { background: #e8f5ec; color: #2d7a48; display: block; }
+
+  @media (max-width: 480px) {
+    .events-grid { grid-template-columns: 1fr; }
+    .guest-header { flex-direction: column; align-items: flex-start; }
+    .rsvp-btns { width: 100%; }
+    .btn-rsvp { flex: 1; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-ornament"></div>
+<div class="container">
+
+  <div class="hero">
+    <div class="monogram"><span>K&P</span></div>
+    <h1 class="hero-names"><em>Kamila</em> & Piotr</h1>
+    <div class="divider-ornament"><span>♡</span></div>
+    <p class="hero-date">26 czerwca 2027</p>
+    <p class="hero-tagline">Mamy wielką nadzieję, że uda się Wam<br>świętować ten szczególny moment z nami.</p>
+  </div>
+
+  <!-- Event info -->
+  <div class="card">
+    <div class="card-title">Szczegóły uroczystości</div>
+    <div class="events-grid">
+      <div class="event-box">
+        <div class="event-box-body">
+          <div class="event-label">Ceremonia</div>
+          <div class="event-name">Bazylika Mniejsza</div>
+          <div class="event-detail">Zduńska Wola</div>
+          <div class="event-time">godz. 17:00</div>
+        </div>
+        <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=Bazylika+Mniejsza+Zdu%C5%84ska+Wola" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Wyznacz trasę
+        </a>
+      </div>
+      <div class="event-box">
+        <div class="event-box-body">
+          <div class="event-label">Wesele</div>
+          <div class="event-name">La Strada</div>
+          <div class="event-detail">Janiszewice k. Zduńskiej Woli</div>
+        </div>
+        <a class="nav-btn" href="https://www.google.com/maps/dir/?api=1&destination=La+Strada+Janiszewice+Zdu%C5%84ska+Wola" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Wyznacz trasę
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RSVP Form -->
+  <div id="rsvp-area">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Wczytywanie zaproszenia…</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec';
+const DIET_OPTIONS = ['Wege','Wegan','Bez glutenu','Bez laktozy','Bez orzechów','Bez ryb','Bez alkoholu','Ciążowa'];
+
+function getCode() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('kod') || params.get('code') || '';
+}
+
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+let groupData = null;
+let formState = {};
+
+async function loadGroup() {
+  const code = getCode();
+  const area = document.getElementById('rsvp-area');
+
+  if (!code) {
+    area.innerHTML = `<div class="card error-state">
+      <div class="success-icon" style="background:var(--rose-light);font-size:22px;margin-bottom:1.25rem">♡</div>
+      <p style="font-size:0.95rem;color:var(--text);margin-bottom:0.4rem;font-weight:500">Brakuje kodu zaproszenia</p>
+      <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.25rem">Sprawdź link w zaproszeniu lub skontaktuj się z nami:</p>
+      <div class="contact-links">
+        <a class="contact-btn" href="tel:+48501234567">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          Kamila — 501 234 567
+        </a>
+        <a class="contact-btn" href="tel:+48512345678">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          Piotr — 512 345 678
+        </a>
+      </div>
+      <p class="contact-sign">Z miłością, Kamila & Piotr ♡</p>
+    </div>`;
+    return;
+  }
+
+  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
+    loadDemoMode(area);
+    return;
+  }
+
+  try {
+    const resp = await fetch(`${SCRIPT_URL}?action=getGroup&code=${code}`);
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+    groupData = data;
+    initFormState(data);
+    renderForm(area);
+  } catch(e) {
+    area.innerHTML = `<div class="card error-state"><p>Nie udało się wczytać zaproszenia.<br><small style="color:var(--text-muted)">${e.message}</small></p></div>`;
+  }
+}
+
+function loadDemoMode(area) {
+  groupData = {
+    groupName: 'Rodzina Kowalskich',
+    code: 'DEMO',
+    guests: [
+      { id: 'g1', name: 'Anna Kowalska', type: 'adult', rsvp: null, diet: [], notes: '' },
+      { id: 'g2', name: 'Jan Kowalski', type: 'plus1', rsvp: null, diet: [], notes: '', plus1Name: '' },
+      { id: 'g3', name: 'Zosia Kowalska', type: 'child', rsvp: null, diet: [], notes: '', childAge: '' }
+    ]
+  };
+  initFormState(groupData);
+  renderForm(area);
+}
+
+function initFormState(data) {
+  formState = {
+    guests: {},
+    musicDedication: data.musicDedication || '',
+    message: data.message || ''
+  };
+  data.guests.forEach(g => {
+    formState.guests[g.id] = {
+      rsvp: g.rsvp,
+      diet: [...(g.diet || [])],
+      notes: g.notes || '',
+      childAge: g.childAge || '',
+      plus1Name: g.plus1Name || ''
+    };
+  });
+}
+
+function renderForm(area) {
+  area.innerHTML = `
+    <div class="card">
+      <div class="card-title">Goście (${groupData.guests.length})</div>
+      <div id="guests-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dodatkowe informacje</div>
+      <div class="extras-row">
+        <div>
+          <div class="field-label">Dedykacja muzyczna</div>
+          <input type="text" class="text-input" id="music-input" placeholder="Jaka piosenka porwie Cię do tańca?" value="${escHtml(formState.musicDedication)}">
+        </div>
+        <div>
+          <div class="field-label">Wiadomość dla pary młodej</div>
+          <textarea class="text-input" id="message-input" placeholder="Życzenia, pytania lub uwagi…">${escHtml(formState.message)}</textarea>
+        </div>
+      </div>
+    </div>
+    <div id="status-msg" class="status-msg"></div>
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">Wyślij odpowiedź</button>
+  `;
+
+  renderGuests();
+
+  document.getElementById('music-input').addEventListener('input', e => { formState.musicDedication = e.target.value; });
+  document.getElementById('message-input').addEventListener('input', e => { formState.message = e.target.value; });
+}
+
+function renderGuests() {
+  const list = document.getElementById('guests-list');
+  list.innerHTML = groupData.guests.map(g => guestCard(g)).join('');
+}
+
+function guestCard(g) {
+  const s = formState.guests[g.id];
+  const isChild = g.type === 'child';
+  const isPlus1 = g.type === 'plus1';
+  const avatarClass = isChild ? 'guest-avatar child-avatar' : isPlus1 ? 'guest-avatar plus1-avatar' : 'guest-avatar';
+  const tagLabel = isChild ? 'DZIECKO' : isPlus1 ? 'OSOBA TOWARZYSZĄCA' : 'DOROSŁY';
+
+  // For plus1: display name from formState if filled, otherwise placeholder label
+  const displayName = isPlus1
+    ? (s.plus1Name.trim() || 'Osoba towarzysząca')
+    : g.name;
+  const avatarText = isPlus1
+    ? (s.plus1Name.trim() ? initials(s.plus1Name) : '+1')
+    : initials(g.name);
+
+  const dietHtml = DIET_OPTIONS.map(d => `
+    <button class="diet-tag ${s.diet.includes(d) ? 'active' : ''}" onclick="toggleDiet('${g.id}','${d}')">${d}</button>
+  `).join('');
+
+  const childAgeHtml = isChild ? `
+    <div class="child-age-row">
+      <label>Wiek dziecka:</label>
+      <input class="child-age-input" type="number" min="0" max="17" placeholder="lat"
+        value="${escHtml(s.childAge)}" onchange="setChildAge('${g.id}', this.value)">
+    </div>
+  ` : '';
+
+  const plus1NameHtml = isPlus1 && s.rsvp === 'yes' ? `
+    <div class="plus1-name-row">
+      <div class="diet-label">Imię i nazwisko osoby towarzyszącej</div>
+      <input class="text-input" type="text" placeholder="Imię i Nazwisko"
+        value="${escHtml(s.plus1Name)}"
+        oninput="setPlus1Name('${g.id}', this.value)"
+        style="margin-top:0.3rem">
+    </div>
+  ` : '';
+
+  const showDiet = s.rsvp === 'yes';
+
+  return `
+    <div class="guest-item" id="guest-${g.id}">
+      <div class="guest-header">
+        <div class="guest-info">
+          <div class="${avatarClass}">${avatarText}</div>
+          <div>
+            <div class="guest-name">${escHtml(displayName)}</div>
+            <div class="guest-tag">${tagLabel}</div>
+          </div>
+        </div>
+        <div class="rsvp-btns">
+          <button class="btn-rsvp yes ${s.rsvp === 'yes' ? 'active' : ''}" onclick="setRsvp('${g.id}','yes')">✓ ${isPlus1 ? 'Przyjdzie' : 'Będę'}</button>
+          <button class="btn-rsvp no ${s.rsvp === 'no' ? 'active' : ''}" onclick="setRsvp('${g.id}','no')">✕ ${isPlus1 ? 'Nie przyjdzie' : 'Nie będę'}</button>
+        </div>
+      </div>
+      ${showDiet ? `
+        <div class="diet-section">
+          ${plus1NameHtml}
+          <div class="diet-label" style="margin-top:${isPlus1 ? '0.75rem' : '0'}">Dieta / Alergie</div>
+          <div class="diet-tags">${dietHtml}</div>
+          ${childAgeHtml}
+          <textarea class="diet-notes" placeholder="Inne uwagi (np. uczulenie na orzeszki)…" onchange="setNotes('${g.id}', this.value)">${escHtml(s.notes)}</textarea>
+        </div>
+      ` : isPlus1 && s.rsvp !== 'no' ? '' : ''}
+    </div>
+  `;
+}
+
+function setRsvp(id, val) {
+  formState.guests[id].rsvp = val;
+  renderGuests();
+}
+function toggleDiet(id, diet) {
+  const arr = formState.guests[id].diet;
+  const i = arr.indexOf(diet);
+  if (i >= 0) arr.splice(i, 1); else arr.push(diet);
+  renderGuests();
+}
+function setNotes(id, val) { formState.guests[id].notes = val; }
+function setChildAge(id, val) { formState.guests[id].childAge = val; }
+function setPlus1Name(id, val) {
+  formState.guests[id].plus1Name = val;
+  // Update avatar and name display without full re-render
+  const g = groupData.guests.find(g => g.id === id);
+  if (!g) return;
+  const item = document.getElementById(`guest-${id}`);
+  if (!item) return;
+  const avatarEl = item.querySelector('.guest-avatar');
+  const nameEl = item.querySelector('.guest-name');
+  if (avatarEl) avatarEl.textContent = val.trim() ? initials(val) : '+1';
+  if (nameEl) nameEl.textContent = val.trim() || 'Osoba towarzysząca';
+}
+
+async function submitForm() {
+  const btn = document.getElementById('submit-btn');
+  const statusEl = document.getElementById('status-msg');
+  statusEl.className = 'status-msg';
+
+  const unanswered = groupData.guests.filter(g => formState.guests[g.id].rsvp === null);
+  if (unanswered.length > 0) {
+    statusEl.textContent = `Proszę zaznaczyć odpowiedź dla: ${unanswered.map(g => g.name.split(' ')[0]).join(', ')}`;
+    statusEl.className = 'status-msg error';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Wysyłanie…';
+
+  const payload = {
+    action: 'submitRsvp',
+    code: groupData.code,
+    groupName: groupData.groupName,
+    musicDedication: formState.musicDedication,
+    message: formState.message,
+    guests: groupData.guests.map(g => ({
+      id: g.id,
+      name: g.type === 'plus1' ? (formState.guests[g.id].plus1Name || 'Osoba towarzysząca') : g.name,
+      type: g.type,
+      rsvp: formState.guests[g.id].rsvp,
+      diet: formState.guests[g.id].diet.join(', '),
+      notes: formState.guests[g.id].notes,
+      childAge: formState.guests[g.id].childAge,
+      plus1Name: formState.guests[g.id].plus1Name || ''
+    }))
+  };
+
+  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
+    setTimeout(() => showSuccess(), 800);
+    return;
+  }
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    showSuccess();
+  } catch(e) {
+    statusEl.textContent = 'Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z parą młodą.';
+    statusEl.className = 'status-msg error';
+    btn.disabled = false;
+    btn.textContent = 'Wyślij odpowiedź';
+  }
+}
+
+function showSuccess() {
+  const attending = Object.values(formState.guests).filter(g => g.rsvp === 'yes').length;
+
+  const timelineHTML = `
+    <div class="card" style="margin-top:1rem;text-align:left">
+      <div class="card-title">Plan dnia — 26 czerwca 2027</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">16:00</div>
+            <div class="tl-title">Błogosławieństwo</div>
+            <div class="tl-desc">Spotkanie rodziny w domu Pary Młodej</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2l1.5 4.5H18l-3.75 2.75L15.75 14 12 11.25 8.25 14l1.5-4.75L6 6.5h4.5z"/><path d="M5 20h14"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">17:00</div>
+            <div class="tl-title">Msza Święta</div>
+            <div class="tl-desc">Bazylika Mniejsza, Zduńska Wola</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon gold-icon">
+              <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m8 0h3a2 2 0 002-2v-3"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">18:30</div>
+            <div class="tl-title">Powitanie gości</div>
+            <div class="tl-desc">La Strada, Janiszewice — toast powitalny i aperitif</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon gold-icon">
+              <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">19:00</div>
+            <div class="tl-title">Uroczysty obiad</div>
+            <div class="tl-desc">Wielodaniowa kolacja weselna</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">20:00</div>
+            <div class="tl-title">Pierwszy taniec & zabawa</div>
+            <div class="tl-desc">Otwarcie parkietu — muzyka na żywo</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon gold-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">23:00</div>
+            <div class="tl-title">Tort weselny</div>
+            <div class="tl-desc">Słodki moment — ceremonia krojenia tortu</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <div class="tl-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 009 9 9 9 0 11-9-9z"/></svg>
+            </div>
+            <div class="tl-line"></div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-time">00:00</div>
+            <div class="tl-title">Poprawiny i zabawa do rana</div>
+            <div class="tl-desc">Muzyka, taniec i wspomnienia na całą noc</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('rsvp-area').innerHTML = attending > 0 ? `
+    <div class="card success-state">
+      <div class="success-icon">♡</div>
+      <h2>Dziękujemy!</h2>
+      <p>Twoja odpowiedź została zapisana.<br>Nie możemy się doczekać spotkania z Wami!</p>
+      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+    </div>
+    ${timelineHTML}
+  ` : `
+    <div class="card success-state">
+      <div class="success-icon" style="font-size:22px">♡</div>
+      <h2>Odpowiedź zapisana</h2>
+      <p>Przykro nam, że nie będziecie mogli być z nami.<br>Dziękujemy za odpowiedź.</p>
+      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+    </div>
+  `;
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+loadGroup();
+</script>
+</body>
+</html>
