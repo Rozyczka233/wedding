@@ -205,7 +205,7 @@
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
 const RSVP_BASE_URL = window.location.origin + window.location.pathname.replace('admin.html','index.html');
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec';
 
 let groups = [];
 let newGuests = [{ name: '', type: 'adult' }];
@@ -227,7 +227,7 @@ function logout() {
 }
 
 function loadData() {
-  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
+  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
     groups = getDemoGroups();
   } else {
     fetch(`${SCRIPT_URL}?action=getAllGroups`)
@@ -415,8 +415,8 @@ function renderSettings() {
       </div>
       <div class="setting-row">
         <label>Google Apps Script URL</label>
-        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec">
-        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec</p>
+        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec">
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec</p>
       </div>
     </div>
     <div class="settings-card">
@@ -524,7 +524,7 @@ async function saveGroup() {
     guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
   };
 
-  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbyzTzMLOCt70ZPat56diRGLsSUYSQTsbIJuP9OVh3nn0IF-CwdjMObhubgAU3fbCPqpGA/exec') {
+  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
     try {
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addGroup', group: newGroup }) });
     } catch(e) {}
