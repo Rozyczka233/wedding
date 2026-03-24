@@ -248,7 +248,7 @@
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
 const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/gosc';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbZAXJlMCv_vsJ3rysW3wxmIWx1w5dxLhAEKH-_BBiXTD1M_X6yNJyCLBfnHVbHypxGg/exec';
 
 let groups = [];
 let newGuests = [{ name: '', type: 'adult' }];
@@ -444,7 +444,7 @@ function renderSettings() {
       <ol style="padding-left:1.25rem;font-size:0.85rem;line-height:2;color:var(--text-muted)">
         <li>Skopiuj kod Apps Script z pliku <code>apps-script.gs</code> do Google Apps Script</li>
         <li>Opublikuj jako aplikację webową (dostęp: wszyscy)</li>
-        <li>Wklej URL skryptu w obu plikach HTML (<code>https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec</code>)</li>
+        <li>Wklej URL skryptu w obu plikach HTML (<code>https://script.google.com/macros/s/AKfycbzbZAXJlMCv_vsJ3rysW3wxmIWx1w5dxLhAEKH-_BBiXTD1M_X6yNJyCLBfnHVbHypxGg/exec</code>)</li>
         <li>Wgraj pliki na hosting (GitHub Pages, Netlify — darmowe)</li>
         <li>Dodaj grupy gości → kopiuj linki / drukuj QR kody → wyślij gościom</li>
       </ol>
@@ -540,7 +540,7 @@ async function saveGroup() {
     guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
   };
 
-  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec') {
+  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzbZAXJlMCv_vsJ3rysW3wxmIWx1w5dxLhAEKH-_BBiXTD1M_X6yNJyCLBfnHVbHypxGg/exec') {
     try {
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addGroup', group: newGroup }) });
     } catch(e) {}
