@@ -155,6 +155,29 @@
   .setting-row label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
   .copy-btn { font-size: 0.75rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; margin-left: 8px; }
 
+  /* Edit group modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(45,32,32,0.45);
+    z-index: 100; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
+    padding: 1.5rem; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto;
+  }
+  .modal-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+  .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; }
+  .modal-close:hover { color: var(--rose); }
+  .modal-section-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; margin-top: 1rem; }
+  .modal-guest-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .modal-guest-row input, .modal-guest-row select { flex: 1; margin-bottom: 0; }
+  .modal-guest-row select { max-width: 140px; }
+  .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; justify-content: flex-end; }
+  .btn-danger { background: var(--rose-light); color: var(--rose); border: 0.5px solid var(--rose-mid); border-radius: 8px; padding: 0.5rem 1rem; font-family: 'Jost', sans-serif; font-size: 0.82rem; cursor: pointer; }
+  .btn-danger:hover { background: var(--rose); color: white; }
+  .btn-save { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 0.5rem 1.25rem; font-family: 'Jost', sans-serif; font-size: 0.82rem; cursor: pointer; font-weight: 500; }
+  .btn-save:hover { background: #b36379; }
+
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -202,10 +225,30 @@
   </main>
 </div>
 
+<!-- Edit group modal -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>Edytuj grupę</span>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
+    </div>
+    <div class="modal-section-label">Nazwa grupy</div>
+    <input class="input-field" id="edit-group-name" placeholder="Nazwa grupy" style="margin-bottom:0">
+    <div class="modal-section-label" style="margin-top:1rem">Goście</div>
+    <div id="edit-guests-list"></div>
+    <button class="add-guest-btn" style="margin-top:8px" onclick="addEditGuestRow()">+ Dodaj osobę</button>
+    <div class="modal-actions">
+      <button class="btn-danger" onclick="deleteGroup()">Usuń grupę</button>
+      <button class="btn-save" onclick="saveEditGroup()">Zapisz zmiany</button>
+    </div>
+    <p id="edit-status" style="font-size:0.78rem;margin-top:0.5rem;text-align:right;display:none"></p>
+  </div>
+</div>
+
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
-const RSVP_BASE_URL = window.location.origin + window.location.pathname.replace('admin.html','index.html');
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec';
+const RSVP_BASE_URL = window.location.origin + window.location.pathname.replace('admin.html','gosc.html');
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec';
 
 let groups = [];
 let newGuests = [{ name: '', type: 'adult' }];
@@ -227,40 +270,12 @@ function logout() {
 }
 
 function loadData() {
-  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
-    groups = getDemoGroups();
-  } else {
-    fetch(`${SCRIPT_URL}?action=getAllGroups`)
-      .then(r => r.json())
-      .then(data => { groups = data; renderAll(); })
-      .catch(() => { groups = getDemoGroups(); renderAll(); });
-    return;
-  }
-  renderAll();
+  fetch(`${SCRIPT_URL}?action=getAllGroups`)
+    .then(r => r.json())
+    .then(data => { groups = data; renderAll(); })
+    .catch(() => { groups = []; renderAll(); });
 }
 
-function getDemoGroups() {
-  return [
-    { id: 'grp1', groupName: 'Rodzina Kowalskich', code: 'KOW123', submittedAt: '2026-11-15 14:32',
-      musicDedication: 'Bohemian Rhapsody', message: 'Nie możemy się doczekać!',
-      guests: [
-        { id:'g1', name:'Anna Kowalska', type:'adult', rsvp:'yes', diet:'Bez glutenu', notes:'' },
-        { id:'g2', name:'Jan Kowalski', type:'adult', rsvp:'yes', diet:'Bez alkoholu', notes:'' },
-        { id:'g3', name:'Zosia Kowalska', type:'child', rsvp:'yes', diet:'', notes:'', childAge:'7' }
-      ]},
-    { id: 'grp2', groupName: 'Nowakowie', code: 'NOW456', submittedAt: null,
-      musicDedication: '', message: '',
-      guests: [
-        { id:'g4', name:'Maria Nowak', type:'adult', rsvp:null, diet:'', notes:'' },
-        { id:'g5', name:'Tomasz Nowak', type:'adult', rsvp:null, diet:'', notes:'' }
-      ]},
-    { id: 'grp3', groupName: 'Wiśniewska Ewa', code: 'WIS789', submittedAt: '2026-11-20 09:11',
-      musicDedication: '', message: '',
-      guests: [
-        { id:'g6', name:'Ewa Wiśniewska', type:'adult', rsvp:'no', diet:'', notes:'Będę na urlopie, przepraszam!' }
-      ]}
-  ];
-}
 
 function renderAll() {
   renderStats();
@@ -317,6 +332,7 @@ function renderGroups() {
           </div>
           <div class="group-actions">
             ${statusBadge}
+            <button class="btn-sm rose" onclick="event.stopPropagation();openEditModal('${g.id}')">Edytuj</button>
             <button class="btn-sm" onclick="event.stopPropagation();copyLink('${rsvpLink}')">Kopiuj link</button>
           </div>
         </div>
@@ -410,13 +426,13 @@ function renderSettings() {
     <div class="settings-card">
       <h3>Konfiguracja systemu</h3>
       <div class="setting-row">
-        <label>URL strony RSVP (do ustawienia w index.html)</label>
+        <label>URL strony RSVP (do ustawienia w gosc.html)</label>
         <input class="input-field" value="${RSVP_BASE_URL}" readonly>
       </div>
       <div class="setting-row">
         <label>Google Apps Script URL</label>
-        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec">
-        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec</p>
+        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/...">
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Wklej tutaj URL swojego skryptu Apps Script</p>
       </div>
     </div>
     <div class="settings-card">
@@ -428,7 +444,7 @@ function renderSettings() {
       <ol style="padding-left:1.25rem;font-size:0.85rem;line-height:2;color:var(--text-muted)">
         <li>Skopiuj kod Apps Script z pliku <code>apps-script.gs</code> do Google Apps Script</li>
         <li>Opublikuj jako aplikację webową (dostęp: wszyscy)</li>
-        <li>Wklej URL skryptu w obu plikach HTML (<code>PASTE_YOUR_APPS_SCRIPT_URL_HERE</code>)</li>
+        <li>Wklej URL skryptu w obu plikach HTML (<code>https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec</code>)</li>
         <li>Wgraj pliki na hosting (GitHub Pages, Netlify — darmowe)</li>
         <li>Dodaj grupy gości → kopiuj linki / drukuj QR kody → wyślij gościom</li>
       </ol>
@@ -524,7 +540,7 @@ async function saveGroup() {
     guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
   };
 
-  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
+  if (SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec') {
     try {
       await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addGroup', group: newGroup }) });
     } catch(e) {}
@@ -577,6 +593,93 @@ function exportCSV() {
   a.href = URL.createObjectURL(blob);
   a.download = 'RSVP_Kamila_Piotr.csv';
   a.click();
+}
+
+let editingGroupId = null;
+let editGuests = [];
+
+function openEditModal(groupId) {
+  const g = groups.find(g => g.id === groupId);
+  if (!g) return;
+  editingGroupId = groupId;
+  editGuests = g.guests.map(guest => ({ ...guest }));
+  document.getElementById('edit-group-name').value = g.groupName;
+  renderEditGuests();
+  document.getElementById('edit-modal').classList.add('open');
+  document.getElementById('edit-status').style.display = 'none';
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editingGroupId = null;
+  editGuests = [];
+}
+
+function renderEditGuests() {
+  const list = document.getElementById('edit-guests-list');
+  list.innerHTML = editGuests.map((g, i) => `
+    <div class="modal-guest-row">
+      <input class="input-field" style="margin-bottom:0" placeholder="Imię i nazwisko"
+        value="${escHtml(g.name)}" oninput="editGuests[${i}].name=this.value">
+      <select class="input-field" style="margin-bottom:0;max-width:150px" onchange="editGuests[${i}].type=this.value">
+        <option value="adult" ${g.type==='adult'?'selected':''}>Dorosły</option>
+        <option value="plus1" ${g.type==='plus1'?'selected':''}>Osoba towarzysząca</option>
+        <option value="child" ${g.type==='child'?'selected':''}>Dziecko</option>
+      </select>
+      <button class="remove-guest" onclick="removeEditGuest(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function addEditGuestRow() {
+  editGuests.push({ id: 'g' + Date.now(), name: '', type: 'adult', rsvp: null, diet: '', notes: '', childAge: '' });
+  renderEditGuests();
+}
+
+function removeEditGuest(i) {
+  if (editGuests.length <= 1) return;
+  editGuests.splice(i, 1);
+  renderEditGuests();
+}
+
+async function saveEditGroup() {
+  const groupName = document.getElementById('edit-group-name').value.trim();
+  if (!groupName) { alert('Podaj nazwę grupy'); return; }
+  const filledGuests = editGuests.filter(g => g.name.trim());
+  if (!filledGuests.length) { alert('Dodaj przynajmniej jedną osobę'); return; }
+
+  const statusEl = document.getElementById('edit-status');
+  const g = groups.find(g => g.id === editingGroupId);
+  g.groupName = groupName;
+  g.guests = filledGuests;
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'updateGroup', group: g })
+    });
+  } catch(e) {}
+
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--green)';
+  statusEl.textContent = 'Zapisano!';
+  setTimeout(() => { closeEditModal(); renderAll(); }, 800);
+}
+
+async function deleteGroup() {
+  const g = groups.find(g => g.id === editingGroupId);
+  if (!confirm(`Usunąć grupę "${g.groupName}"? Tej operacji nie można cofnąć.`)) return;
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'deleteGroup', groupId: editingGroupId })
+    });
+  } catch(e) {}
+
+  groups = groups.filter(g => g.id !== editingGroupId);
+  closeEditModal();
+  renderAll();
 }
 
 function escHtml(str) {
