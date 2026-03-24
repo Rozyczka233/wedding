@@ -303,7 +303,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzERG4uHjEnyjpH8DUApspItDUDI7OMeZ4JMcmn4Nprz-XzsQtiyY2Y9yezdGUAru144w/exec';
 const DIET_OPTIONS = ['Wege','Wegan','Bez glutenu','Bez laktozy','Bez orzechów','Bez ryb','Bez alkoholu','Ciążowa'];
 
 function getCode() {
@@ -342,11 +342,6 @@ async function loadGroup() {
     return;
   }
 
-  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
-    loadDemoMode(area);
-    return;
-  }
-
   try {
     const resp = await fetch(`${SCRIPT_URL}?action=getGroup&code=${code}`);
     const data = await resp.json();
@@ -359,19 +354,6 @@ async function loadGroup() {
   }
 }
 
-function loadDemoMode(area) {
-  groupData = {
-    groupName: 'Rodzina Kowalskich',
-    code: 'DEMO',
-    guests: [
-      { id: 'g1', name: 'Anna Kowalska', type: 'adult', rsvp: null, diet: [], notes: '' },
-      { id: 'g2', name: 'Jan Kowalski', type: 'plus1', rsvp: null, diet: [], notes: '', plus1Name: '' },
-      { id: 'g3', name: 'Zosia Kowalska', type: 'child', rsvp: null, diet: [], notes: '', childAge: '' }
-    ]
-  };
-  initFormState(groupData);
-  renderForm(area);
-}
 
 function initFormState(data) {
   formState = {
@@ -548,11 +530,6 @@ async function submitForm() {
       plus1Name: formState.guests[g.id].plus1Name || ''
     }))
   };
-
-  if (SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxFXSKtnnnxm7P9kIOvnhLBWLxqf_mV_DyNSMmcI8S_iapoJH4nEB7EgYDmaQm3eOCuPA/exec') {
-    setTimeout(() => showSuccess(), 800);
-    return;
-  }
 
   try {
     await fetch(SCRIPT_URL, {
