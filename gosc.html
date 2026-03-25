@@ -71,26 +71,24 @@
   /* Countdown */
   .countdown-card {
     text-align: center;
-    padding: 1.35rem 1.5rem;
+    padding: 1.2rem 1.3rem;
   }
   .countdown-label {
     font-size: 0.68rem;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.65rem;
   }
-  .countdown-value {
+  .countdown-inline {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.3rem, 10vw, 3.4rem);
-    font-weight: 600;
-    line-height: 1;
+    font-size: 0.9rem;
     color: var(--rose);
+    line-height: 1.6;
   }
-  .countdown-sub {
-    margin-top: 0.45rem;
-    font-size: 0.82rem;
-    color: var(--text-muted);
+  .countdown-inline span {
+    color: var(--rose);
+    font-weight: 600;
   }
 
   /* Event info */
@@ -311,12 +309,6 @@
     <p class="hero-tagline">Mamy wielką nadzieję, że uda się Wam<br>świętować ten szczególny moment z nami.</p>
   </div>
 
-  <div class="card countdown-card">
-    <div class="countdown-label">Do ślubu pozostało</div>
-    <div class="countdown-value" id="countdown-days">—</div>
-    <div class="countdown-sub" id="countdown-sub">dni</div>
-  </div>
-
   <div class="card">
     <div class="card-title">Szczegóły uroczystości</div>
     <div class="events-grid">
@@ -380,26 +372,45 @@ function initials(name) {
   return String(name || '').split(' ').filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
-function updateCountdown() {
-  const elDays = document.getElementById('countdown-days');
-  const elSub = document.getElementById('countdown-sub');
-  if (!elDays || !elSub) return;
+let countdownInterval = null;
 
-  const weddingDate = new Date(WEDDING_DATE);
-  const now = new Date();
+function pad(num) {
+  return String(num).padStart(2, '0');
+}
 
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weddingDay = new Date(weddingDate.getFullYear(), weddingDate.getMonth(), weddingDate.getDate());
+function updateLiveCountdown() {
+  const el = document.getElementById('countdown-live');
+  if (!el) return;
 
-  const diffMs = weddingDay - today;
-  const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  const weddingDate = new Date(WEDDING_DATE).getTime();
+  const now = Date.now();
+  let diff = weddingDate - now;
 
-  elDays.textContent = diffDays;
+  if (diff < 0) diff = 0;
 
-  if (diffDays === 1) {
-    elSub.textContent = 'dzień';
-  } else {
-    elSub.textContent = 'dni';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  el.innerHTML = `
+    <span>${days}</span> dni -
+    <span>${pad(hours)}</span> godziny -
+    <span>${pad(minutes)}</span> minuty -
+    <span>${pad(seconds)}</span> sekundy
+  `;
+}
+
+function startCountdown() {
+  stopCountdown();
+  updateLiveCountdown();
+  countdownInterval = setInterval(updateLiveCountdown, 1000);
+}
+
+function stopCountdown() {
+  if (countdownInterval) {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
   }
 }
 
@@ -661,7 +672,13 @@ async function submitForm() {
 
     showSuccess();
   } catch (e) {
-    statusEl.textContent = 'Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z parą młodą.';
+    statusEl.innerHTML = `
+      Nie udało się przesłać odpowiedzi. Prosimy o kontakt z Parą Młodą w tradycyjny sposób:
+      <br><br>
+      Kamila — 501 234 567
+      <br>
+      Piotr — 512 345 678
+    `;
     statusEl.className = 'status-msg error';
     btn.disabled = false;
     btn.textContent = 'Wyślij odpowiedź';
@@ -670,6 +687,30 @@ async function submitForm() {
 
 function showSuccess() {
   const attending = Object.values(formState.guests).filter(g => g.rsvp === 'yes').length;
+  const area = document.getElementById('rsvp-area');
+
+  const thankYouCard = attending > 0 ? `
+    <div class="card success-state" id="success-section">
+      <div class="success-icon">♡</div>
+      <h2>Dziękujemy!</h2>
+      <p>Twoja odpowiedź została zapisana.<br>Nie możemy się doczekać spotkania z Wami!</p>
+      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+    </div>
+  ` : `
+    <div class="card success-state" id="success-section">
+      <div class="success-icon" style="font-size:22px">♡</div>
+      <h2>Odpowiedź zapisana</h2>
+      <p>Przykro nam, że nie będziecie mogli być z nami.<br>Dziękujemy za przesłanie odpowiedzi.</p>
+      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+    </div>
+  `;
+
+  const countdownHTML = `
+    <div class="card countdown-card">
+      <div class="countdown-label">Do ślubu pozostało</div>
+      <div class="countdown-inline" id="countdown-live">—</div>
+    </div>
+  `;
 
   const timelineHTML = `
     <div class="card" style="margin-top:1rem;text-align:left">
@@ -770,22 +811,22 @@ function showSuccess() {
     </div>
   `;
 
-  document.getElementById('rsvp-area').innerHTML = attending > 0 ? `
-    <div class="card success-state">
-      <div class="success-icon">♡</div>
-      <h2>Dziękujemy!</h2>
-      <p>Twoja odpowiedź została zapisana.<br>Nie możemy się doczekać spotkania z Wami!</p>
-      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
-    </div>
-    ${timelineHTML}
-  ` : `
-    <div class="card success-state">
-      <div class="success-icon" style="font-size:22px">♡</div>
-      <h2>Odpowiedź zapisana</h2>
-      <p>Przykro nam, że nie będziecie mogli być z nami.<br>Dziękujemy za odpowiedź.</p>
-      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
-    </div>
-  `;
+  if (attending > 0) {
+    area.innerHTML = `
+      ${thankYouCard}
+      ${countdownHTML}
+      ${timelineHTML}
+    `;
+    startCountdown();
+  } else {
+    stopCountdown();
+    area.innerHTML = `${thankYouCard}`;
+  }
+
+  const successSection = document.getElementById('success-section');
+  if (successSection) {
+    successSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function escHtml(str) {
@@ -806,7 +847,6 @@ function escapeJs(str) {
     .replace(/\r/g, ' ');
 }
 
-updateCountdown();
 loadGroup();
 </script>
 </body>
