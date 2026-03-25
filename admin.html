@@ -186,7 +186,6 @@
 </head>
 <body>
 
-<!-- Login -->
 <div class="login-wrap" id="login-screen">
   <div class="login-box">
     <h1>Panel Admina</h1>
@@ -197,7 +196,6 @@
   </div>
 </div>
 
-<!-- App -->
 <div class="app" id="app">
   <header>
     <div>
@@ -207,10 +205,8 @@
     <button class="logout-btn" onclick="logout()">Wyloguj</button>
   </header>
   <main>
-    <!-- Stats -->
     <div class="stats-grid" id="stats-grid"></div>
 
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('groups', this)">Grupy gości</button>
       <button class="tab-btn" onclick="switchTab('responses', this)">Odpowiedzi</button>
@@ -225,7 +221,6 @@
   </main>
 </div>
 
-<!-- Edit group modal -->
 <div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEditModal()">
   <div class="modal">
     <div class="modal-title">
@@ -247,8 +242,8 @@
 
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
-const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/gosc';
-const SCRIPT_URL = 'https://script.google.com/macros/library/d/1ackrWzYX9T8HG4rmf0pOXcjy45EKQdwWQJk4NEiA2f-RBnvQw-9xj76o/2;
+const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/index.html';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbZAXJlMCv_vsJ3rysW3wxmIWx1w5dxLhAEKH-_BBiXTD1M_X6yNJyCLBfnHVbHypxGg/exec';
 
 let groups = [];
 let newGuests = [{ name: '', type: 'adult' }];
@@ -426,7 +421,7 @@ function renderSettings() {
     <div class="settings-card">
       <h3>Konfiguracja systemu</h3>
       <div class="setting-row">
-        <label>URL strony RSVP (do ustawienia w gosc.html)</label>
+        <label>URL strony RSVP (do ustawienia w index.html)</label>
         <input class="input-field" value="${RSVP_BASE_URL}" readonly>
       </div>
       <div class="setting-row">
@@ -444,7 +439,7 @@ function renderSettings() {
       <ol style="padding-left:1.25rem;font-size:0.85rem;line-height:2;color:var(--text-muted)">
         <li>Skopiuj kod Apps Script z pliku <code>apps-script.gs</code> do Google Apps Script</li>
         <li>Opublikuj jako aplikację webową (dostęp: wszyscy)</li>
-        <li>Wklej URL skryptu w obu plikach HTML (<code>https://script.google.com/macros/s/AKfycbzbZAXJlMCv_vsJ3rysW3wxmIWx1w5dxLhAEKH-_BBiXTD1M_X6yNJyCLBfnHVbHypxGg/exec</code>)</li>
+        <li>Wklej URL skryptu w obu plikach HTML</li>
         <li>Wgraj pliki na hosting (GitHub Pages, Netlify — darmowe)</li>
         <li>Dodaj grupy gości → kopiuj linki / drukuj QR kody → wyślij gościom</li>
       </ol>
@@ -540,19 +535,24 @@ async function saveGroup() {
     guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
   };
 
-  if (SCRIPT_URL !== 'https://script.google.com/macros/library/d/1ackrWzYX9T8HG4rmf0pOXcjy45EKQdwWQJk4NEiA2f-RBnvQw-9xj76o/2) {
-    try {
-      await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'addGroup', group: newGroup }) });
-    } catch(e) {}
-  }
+  try {
+    const resp = await fetch(SCRIPT_URL, { 
+      method: 'POST', 
+      body: JSON.stringify({ action: 'addGroup', group: newGroup }) 
+    });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
 
-  groups.push(newGroup);
-  newGuests = [{ name: '', type: 'adult' }];
-  renderAll();
-  statusEl.style.display = 'block';
-  statusEl.style.color = 'var(--green)';
-  statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
-  setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    groups.push(newGroup);
+    newGuests = [{ name: '', type: 'adult' }];
+    renderAll();
+    statusEl.style.display = 'block';
+    statusEl.style.color = 'var(--green)';
+    statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
+    setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+  } catch(e) {
+    alert('Błąd zapisu: ' + e.message);
+  }
 }
 
 function copyLink(url) {
@@ -654,16 +654,20 @@ async function saveEditGroup() {
   g.guests = filledGuests;
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify({ action: 'updateGroup', group: g })
     });
-  } catch(e) {}
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
 
-  statusEl.style.display = 'block';
-  statusEl.style.color = 'var(--green)';
-  statusEl.textContent = 'Zapisano!';
-  setTimeout(() => { closeEditModal(); renderAll(); }, 800);
+    statusEl.style.display = 'block';
+    statusEl.style.color = 'var(--green)';
+    statusEl.textContent = 'Zapisano!';
+    setTimeout(() => { closeEditModal(); renderAll(); }, 800);
+  } catch(e) {
+    alert('Błąd zapisu: ' + e.message);
+  }
 }
 
 async function deleteGroup() {
@@ -671,15 +675,19 @@ async function deleteGroup() {
   if (!confirm(`Usunąć grupę "${g.groupName}"? Tej operacji nie można cofnąć.`)) return;
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify({ action: 'deleteGroup', groupId: editingGroupId })
     });
-  } catch(e) {}
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
 
-  groups = groups.filter(g => g.id !== editingGroupId);
-  closeEditModal();
-  renderAll();
+    groups = groups.filter(g => g.id !== editingGroupId);
+    closeEditModal();
+    renderAll();
+  } catch(e) {
+    alert('Błąd usuwania: ' + e.message);
+  }
 }
 
 function escHtml(str) {
