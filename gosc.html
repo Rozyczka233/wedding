@@ -68,6 +68,31 @@
   }
   .card-title::after { content: ''; flex: 1; height: 0.5px; background: var(--rose-light); }
 
+  /* Countdown */
+  .countdown-card {
+    text-align: center;
+    padding: 1.35rem 1.5rem;
+  }
+  .countdown-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.55rem;
+  }
+  .countdown-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.3rem, 10vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--rose);
+  }
+  .countdown-sub {
+    margin-top: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
   /* Event info */
   .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
   .event-box {
@@ -169,6 +194,30 @@
   .btn-rsvp.no.active { background: var(--rose-light); border-color: var(--rose-mid); color: var(--rose); }
 
   /* Diet tags */
+  .diet-toggle-wrap {
+    margin-top: 0.875rem;
+    padding-top: 0.875rem;
+    border-top: 0.5px solid var(--border);
+  }
+  .diet-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.48rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--rose-mid);
+    background: var(--rose-light);
+    color: var(--rose);
+    font-family: 'Jost', sans-serif;
+    font-size: 0.76rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .diet-toggle-btn:hover {
+    background: var(--rose);
+    color: white;
+  }
   .diet-section { margin-top: 0.875rem; padding-top: 0.875rem; border-top: 0.5px solid var(--border); }
   .diet-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
   .diet-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -262,7 +311,12 @@
     <p class="hero-tagline">Mamy wielką nadzieję, że uda się Wam<br>świętować ten szczególny moment z nami.</p>
   </div>
 
-  <!-- Event info -->
+  <div class="card countdown-card">
+    <div class="countdown-label">Do ślubu pozostało</div>
+    <div class="countdown-value" id="countdown-days">—</div>
+    <div class="countdown-sub" id="countdown-sub">dni</div>
+  </div>
+
   <div class="card">
     <div class="card-title">Szczegóły uroczystości</div>
     <div class="events-grid">
@@ -292,7 +346,6 @@
     </div>
   </div>
 
-  <!-- RSVP Form -->
   <div id="rsvp-area">
     <div class="loading-state">
       <div class="spinner"></div>
@@ -304,7 +357,19 @@
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLFYRvEW6kCUEtTSqAF30qsXLsmD1pulIuexB8TTgj4XYljeVV0cWMNapXJ5h66iskvA/exec';
-const DIET_OPTIONS = ['Wege','Wegan','Bez glutenu','Bez laktozy','Bez orzechów','Bez ryb','Bez alkoholu','Ciążowa'];
+const WEDDING_DATE = '2027-06-26T17:00:00';
+const DIET_OPTIONS = [
+  'Wegetariańska',
+  'Wegańska',
+  'Bez glutenu',
+  'Bez laktozy',
+  'Bez orzechów',
+  'Bez ryb i owoców morza',
+  'Bez wieprzowiny',
+  'Cukrzycowa',
+  'Ciążowa',
+  'Bez alkoholu'
+];
 
 function getCode() {
   const params = new URLSearchParams(window.location.search);
@@ -312,7 +377,30 @@ function getCode() {
 }
 
 function initials(name) {
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  return String(name || '').split(' ').filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function updateCountdown() {
+  const elDays = document.getElementById('countdown-days');
+  const elSub = document.getElementById('countdown-sub');
+  if (!elDays || !elSub) return;
+
+  const weddingDate = new Date(WEDDING_DATE);
+  const now = new Date();
+
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weddingDay = new Date(weddingDate.getFullYear(), weddingDate.getMonth(), weddingDate.getDate());
+
+  const diffMs = weddingDay - today;
+  const diffDays = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+
+  elDays.textContent = diffDays;
+
+  if (diffDays === 1) {
+    elSub.textContent = 'dzień';
+  } else {
+    elSub.textContent = 'dni';
+  }
 }
 
 let groupData = null;
@@ -343,17 +431,16 @@ async function loadGroup() {
   }
 
   try {
-    const resp = await fetch(`${SCRIPT_URL}?action=getGroup&code=${code}`);
+    const resp = await fetch(`${SCRIPT_URL}?action=getGroup&code=${encodeURIComponent(code)}`);
     const data = await resp.json();
     if (data.error) throw new Error(data.error);
     groupData = data;
     initFormState(data);
     renderForm(area);
-  } catch(e) {
-    area.innerHTML = `<div class="card error-state"><p>Nie udało się wczytać zaproszenia.<br><small style="color:var(--text-muted)">${e.message}</small></p></div>`;
+  } catch (e) {
+    area.innerHTML = `<div class="card error-state"><p>Nie udało się wczytać zaproszenia.<br><small style="color:var(--text-muted)">${escHtml(e.message)}</small></p></div>`;
   }
 }
-
 
 function initFormState(data) {
   formState = {
@@ -361,13 +448,15 @@ function initFormState(data) {
     musicDedication: data.musicDedication || '',
     message: data.message || ''
   };
+
   data.guests.forEach(g => {
     formState.guests[g.id] = {
       rsvp: g.rsvp,
       diet: [...(g.diet || [])],
       notes: g.notes || '',
       childAge: g.childAge || '',
-      plus1Name: g.plus1Name || ''
+      plus1Name: g.plus1Name || '',
+      dietOpen: Array.isArray(g.diet) ? g.diet.length > 0 : false
     };
   });
 }
@@ -413,16 +502,16 @@ function guestCard(g) {
   const avatarClass = isChild ? 'guest-avatar child-avatar' : isPlus1 ? 'guest-avatar plus1-avatar' : 'guest-avatar';
   const tagLabel = isChild ? 'DZIECKO' : isPlus1 ? 'OSOBA TOWARZYSZĄCA' : 'DOROSŁY';
 
-  // For plus1: display name from formState if filled, otherwise placeholder label
   const displayName = isPlus1
-    ? (s.plus1Name.trim() || 'Osoba towarzysząca')
+    ? (String(s.plus1Name || '').trim() || 'Osoba towarzysząca')
     : g.name;
+
   const avatarText = isPlus1
-    ? (s.plus1Name.trim() ? initials(s.plus1Name) : '+1')
+    ? (String(s.plus1Name || '').trim() ? initials(s.plus1Name) : '+1')
     : initials(g.name);
 
   const dietHtml = DIET_OPTIONS.map(d => `
-    <button class="diet-tag ${s.diet.includes(d) ? 'active' : ''}" onclick="toggleDiet('${g.id}','${d}')">${d}</button>
+    <button type="button" class="diet-tag ${s.diet.includes(d) ? 'active' : ''}" onclick="toggleDiet('${g.id}','${escapeJs(d)}')">${escHtml(d)}</button>
   `).join('');
 
   const childAgeHtml = isChild ? `
@@ -436,64 +525,92 @@ function guestCard(g) {
   const plus1NameHtml = isPlus1 && s.rsvp === 'yes' ? `
     <div class="plus1-name-row">
       <div class="diet-label">Imię i nazwisko osoby towarzyszącej</div>
-      <input class="text-input" type="text" placeholder="Imię i Nazwisko"
+      <input class="text-input" type="text" placeholder="Imię i nazwisko"
         value="${escHtml(s.plus1Name)}"
         oninput="setPlus1Name('${g.id}', this.value)"
         style="margin-top:0.3rem">
     </div>
   ` : '';
 
-  const showDiet = s.rsvp === 'yes';
+  const showToggle = s.rsvp === 'yes';
+  const showDietSection = s.rsvp === 'yes' && s.dietOpen;
 
   return `
     <div class="guest-item" id="guest-${g.id}">
       <div class="guest-header">
         <div class="guest-info">
-          <div class="${avatarClass}">${avatarText}</div>
+          <div class="${avatarClass}">${escHtml(avatarText)}</div>
           <div>
             <div class="guest-name">${escHtml(displayName)}</div>
             <div class="guest-tag">${tagLabel}</div>
           </div>
         </div>
         <div class="rsvp-btns">
-          <button class="btn-rsvp yes ${s.rsvp === 'yes' ? 'active' : ''}" onclick="setRsvp('${g.id}','yes')">✓ ${isPlus1 ? 'Przyjdzie' : 'Będę'}</button>
-          <button class="btn-rsvp no ${s.rsvp === 'no' ? 'active' : ''}" onclick="setRsvp('${g.id}','no')">✕ ${isPlus1 ? 'Nie przyjdzie' : 'Nie będę'}</button>
+          <button type="button" class="btn-rsvp yes ${s.rsvp === 'yes' ? 'active' : ''}" onclick="setRsvp('${g.id}','yes')">✓ ${isPlus1 ? 'Przyjdzie' : 'Będę'}</button>
+          <button type="button" class="btn-rsvp no ${s.rsvp === 'no' ? 'active' : ''}" onclick="setRsvp('${g.id}','no')">✕ ${isPlus1 ? 'Nie przyjdzie' : 'Nie będę'}</button>
         </div>
       </div>
-      ${showDiet ? `
+
+      ${showToggle ? `
+        <div class="diet-toggle-wrap">
+          <button type="button" class="diet-toggle-btn" onclick="toggleDietSection('${g.id}')">
+            ${showDietSection ? 'Ukryj dietę / alergie' : 'Dodaj dietę / alergie'}
+          </button>
+        </div>
+      ` : ''}
+
+      ${showDietSection ? `
         <div class="diet-section">
           ${plus1NameHtml}
           <div class="diet-label" style="margin-top:${isPlus1 ? '0.75rem' : '0'}">Dieta / Alergie</div>
           <div class="diet-tags">${dietHtml}</div>
           ${childAgeHtml}
-          <textarea class="diet-notes" placeholder="Inne uwagi (np. uczulenie na orzeszki)…" onchange="setNotes('${g.id}', this.value)">${escHtml(s.notes)}</textarea>
+          <textarea class="diet-notes" placeholder="Inne uwagi, alergie lub informacje dla obsługi…" onchange="setNotes('${g.id}', this.value)">${escHtml(s.notes)}</textarea>
         </div>
-      ` : isPlus1 && s.rsvp !== 'no' ? '' : ''}
+      ` : ''}
     </div>
   `;
 }
 
 function setRsvp(id, val) {
   formState.guests[id].rsvp = val;
+
+  if (val === 'no') {
+    formState.guests[id].dietOpen = false;
+  }
+
   renderGuests();
 }
+
+function toggleDietSection(id) {
+  formState.guests[id].dietOpen = !formState.guests[id].dietOpen;
+  renderGuests();
+}
+
 function toggleDiet(id, diet) {
   const arr = formState.guests[id].diet;
   const i = arr.indexOf(diet);
   if (i >= 0) arr.splice(i, 1); else arr.push(diet);
   renderGuests();
 }
-function setNotes(id, val) { formState.guests[id].notes = val; }
-function setChildAge(id, val) { formState.guests[id].childAge = val; }
+
+function setNotes(id, val) {
+  formState.guests[id].notes = val;
+}
+
+function setChildAge(id, val) {
+  formState.guests[id].childAge = val;
+}
+
 function setPlus1Name(id, val) {
   formState.guests[id].plus1Name = val;
-  // Update avatar and name display without full re-render
-  const g = groupData.guests.find(g => g.id === id);
-  if (!g) return;
+
   const item = document.getElementById(`guest-${id}`);
   if (!item) return;
+
   const avatarEl = item.querySelector('.guest-avatar');
   const nameEl = item.querySelector('.guest-name');
+
   if (avatarEl) avatarEl.textContent = val.trim() ? initials(val) : '+1';
   if (nameEl) nameEl.textContent = val.trim() || 'Osoba towarzysząca';
 }
@@ -505,7 +622,7 @@ async function submitForm() {
 
   const unanswered = groupData.guests.filter(g => formState.guests[g.id].rsvp === null);
   if (unanswered.length > 0) {
-    statusEl.textContent = `Proszę zaznaczyć odpowiedź dla: ${unanswered.map(g => g.name.split(' ')[0]).join(', ')}`;
+    statusEl.textContent = `Proszę zaznaczyć odpowiedź dla: ${unanswered.map(g => (g.name || 'gościa').split(' ')[0]).join(', ')}`;
     statusEl.className = 'status-msg error';
     return;
   }
@@ -532,12 +649,18 @@ async function submitForm() {
   };
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method: 'POST',
       body: JSON.stringify(payload)
     });
+
+    const data = await resp.json().catch(() => ({}));
+    if (data && data.error) {
+      throw new Error(data.error);
+    }
+
     showSuccess();
-  } catch(e) {
+  } catch (e) {
     statusEl.textContent = 'Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z parą młodą.';
     statusEl.className = 'status-msg error';
     btn.disabled = false;
@@ -667,9 +790,23 @@ function showSuccess() {
 
 function escHtml(str) {
   if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
+function escapeJs(str) {
+  return String(str || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ');
+}
+
+updateCountdown();
 loadGroup();
 </script>
 </body>
