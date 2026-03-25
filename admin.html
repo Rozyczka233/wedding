@@ -19,7 +19,6 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
 
-  /* Login */
   .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
   .login-box { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 2.5rem; max-width: 380px; width: 100%; text-align: center; }
   .login-box h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 0.25rem; }
@@ -37,7 +36,6 @@
   }
   .btn-primary:hover { background: #b36379; }
 
-  /* Layout */
   .app { display: none; }
   .app.visible { display: block; }
   header {
@@ -52,7 +50,6 @@
 
   main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
 
-  /* Stats */
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
   .stat-card {
     background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
@@ -64,7 +61,6 @@
   .stat-value.green { color: var(--green); }
   .stat-value.gold { color: var(--gold); }
 
-  /* Tabs */
   .tabs { display: flex; gap: 4px; margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0; }
   .tab-btn {
     padding: 0.6rem 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.83rem;
@@ -74,7 +70,6 @@
   }
   .tab-btn.active { color: var(--rose); border-bottom-color: var(--rose); font-weight: 500; }
 
-  /* Group list */
   .group-card {
     background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
     margin-bottom: 0.875rem; overflow: hidden;
@@ -113,7 +108,6 @@
   .guest-row-diet { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
   .guest-row-notes { font-size: 0.75rem; color: var(--rose); margin-top: 2px; font-style: italic; }
 
-  /* QR */
   .qr-section { margin-top: 1rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
   .qr-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
   .qr-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
@@ -121,7 +115,6 @@
   .qr-link { font-size: 0.78rem; color: var(--text-muted); word-break: break-all; }
   .qr-link strong { display: block; font-size: 0.88rem; color: var(--rose); font-weight: 500; margin-bottom: 2px; }
 
-  /* Add group */
   .add-form {
     background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
     padding: 1.5rem; margin-bottom: 1rem;
@@ -138,7 +131,6 @@
   .add-guest-btn { font-size: 0.78rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; padding: 0; }
   .add-guest-btn:hover { text-decoration: underline; }
 
-  /* Responses tab */
   .responses-table { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); overflow: hidden; }
   .responses-table table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
   .responses-table th { padding: 0.6rem 0.9rem; text-align: left; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); border-bottom: 0.5px solid var(--border); font-weight: 500; }
@@ -148,14 +140,12 @@
 
   .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.88rem; }
 
-  /* Settings */
   .settings-card { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
   .settings-card h3 { font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; }
   .setting-row { margin-bottom: 0.75rem; }
   .setting-row label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
   .copy-btn { font-size: 0.75rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; margin-left: 8px; }
 
-  /* Edit group modal */
   .modal-overlay {
     display: none; position: fixed; inset: 0; background: rgba(45,32,32,0.45);
     z-index: 100; align-items: center; justify-content: center; padding: 1rem;
@@ -242,22 +232,24 @@
 
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
-const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/index.html';
+const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/gosc';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhAbbTcnRQ78YZWiLB6ZJ8ylOrjhl30J_2U7oRsnIMVeHszZKQEYluLgaHD2P8dP-_Cg/exec';
 
 let groups = [];
-let newGuests = [{ name: '', type: 'adult' }];
+let newGuests = [{ name: '', type: 'adult', plus1Name: '' }];
 
 function login() {
   const pw = document.getElementById('password-input').value;
   if (pw === ADMIN_PASSWORD) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
+    renderAll();
     loadData();
   } else {
     document.getElementById('login-err').style.display = 'block';
   }
 }
+
 function logout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('app').classList.remove('visible');
@@ -265,12 +257,18 @@ function logout() {
 }
 
 function loadData() {
+  renderStats();
   fetch(`${SCRIPT_URL}?action=getAllGroups`)
     .then(r => r.json())
-    .then(data => { groups = data; renderAll(); })
-    .catch(() => { groups = []; renderAll(); });
+    .then(data => {
+      groups = Array.isArray(data) ? data : [];
+      renderAll();
+    })
+    .catch(() => {
+      groups = [];
+      renderAll();
+    });
 }
-
 
 function renderAll() {
   renderStats();
@@ -280,50 +278,78 @@ function renderAll() {
 }
 
 function renderStats() {
-  const allGuests = groups.flatMap(g => g.guests);
+  const allGuests = groups.flatMap(g => g.guests || []);
   const yes = allGuests.filter(g => g.rsvp === 'yes').length;
   const no = allGuests.filter(g => g.rsvp === 'no').length;
   const pending = allGuests.filter(g => !g.rsvp).length;
   const responded = groups.filter(g => g.submittedAt).length;
+
   document.getElementById('stats-grid').innerHTML = `
     <div class="stat-card"><div class="stat-label">Wszystkich gości</div><div class="stat-value">${allGuests.length}</div></div>
-    <div class="stat-card"><div class="stat-label">Potwierdzonych</div><div class="stat-value green">${yes}</div></div>
+    <div class="stat-card"><div class="stat-label">Potwierdzonych gości</div><div class="stat-value green">${yes}</div></div>
     <div class="stat-card"><div class="stat-label">Nie będzie</div><div class="stat-value rose">${no}</div></div>
     <div class="stat-card"><div class="stat-label">Oczekuje</div><div class="stat-value gold">${pending}</div></div>
     <div class="stat-card"><div class="stat-label">Grup łącznie</div><div class="stat-value">${groups.length}</div></div>
-    <div class="stat-card"><div class="stat-label">Odpowiedziało</div><div class="stat-value">${responded}</div></div>
+    <div class="stat-card"><div class="stat-label">Odpowiedziało grup</div><div class="stat-value">${responded}</div></div>
   `;
 }
 
 function renderGroups() {
   const el = document.getElementById('tab-groups');
-  if (!groups.length) { el.innerHTML = '<div class="empty-state">Brak grup. Dodaj pierwszą grupę gości.</div>'; return; }
+  if (!groups.length) {
+    el.innerHTML = '<div class="empty-state">Brak grup. Dodaj pierwszą grupę gości.</div>';
+    return;
+  }
+
   el.innerHTML = groups.map(g => {
-    const yes = g.guests.filter(x => x.rsvp === 'yes').length;
-    const no = g.guests.filter(x => x.rsvp === 'no').length;
-    const pending = g.guests.filter(x => !x.rsvp).length;
+    const guests = g.guests || [];
+    const yes = guests.filter(x => x.rsvp === 'yes').length;
+    const no = guests.filter(x => x.rsvp === 'no').length;
+    const pending = guests.filter(x => !x.rsvp).length;
     const statusBadge = g.submittedAt
       ? `<span class="badge yes">Odpowiedziano</span>`
       : `<span class="badge pending">Oczekuje</span>`;
-    const guestRows = g.guests.map(guest => `
-      <div class="guest-row">
-        <div>
-          <div class="guest-row-name">${escHtml(guest.name)} ${guest.type === 'child' ? `<span style="font-size:0.7rem;color:var(--gold)">dziecko${guest.childAge ? ' ('+guest.childAge+' lat)':''}</span>` : guest.type === 'plus1' ? `<span style="font-size:0.7rem;color:#7c68c4">+1 / osoba towarzysząca</span>` : ''}</div>
-          ${guest.diet ? `<div class="guest-row-diet">${escHtml(guest.diet)}</div>` : ''}
-          ${guest.notes ? `<div class="guest-row-notes">${escHtml(guest.notes)}</div>` : ''}
+
+    const guestRows = guests.map(guest => {
+      const guestDisplayName = guest.type === 'plus1'
+        ? (guest.plus1Name || guest.name || 'Osoba towarzysząca')
+        : guest.name;
+
+      const dietText = Array.isArray(guest.diet) ? guest.diet.join(', ') : (guest.diet || '');
+
+      return `
+        <div class="guest-row">
+          <div>
+            <div class="guest-row-name">
+              ${escHtml(guestDisplayName)}
+              ${guest.type === 'child'
+                ? `<span style="font-size:0.7rem;color:var(--gold)">dziecko${guest.childAge ? ' (' + guest.childAge + ' lat)' : ''}</span>`
+                : guest.type === 'plus1'
+                ? `<span style="font-size:0.7rem;color:#7c68c4">+1 / osoba towarzysząca</span>`
+                : ''}
+            </div>
+            ${dietText ? `<div class="guest-row-diet">${escHtml(dietText)}</div>` : ''}
+            ${guest.notes ? `<div class="guest-row-notes">${escHtml(guest.notes)}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            ${guest.rsvp === 'yes'
+              ? '<span class="badge yes">Będę</span>'
+              : guest.rsvp === 'no'
+              ? '<span class="badge no">Nie będę</span>'
+              : '<span class="badge pending">?</span>'}
+          </div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center">
-          ${guest.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : guest.rsvp === 'no' ? '<span class="badge no">Nie będę</span>' : '<span class="badge pending">?</span>'}
-        </div>
-      </div>
-    `).join('');
-    const rsvpLink = `${RSVP_BASE_URL}?kod=${g.code}`;
+      `;
+    }).join('');
+
+    const rsvpLink = `${RSVP_BASE_URL}?kod=${encodeURIComponent(g.code)}`;
+
     return `
       <div class="group-card">
         <div class="group-header" onclick="toggleGroup('${g.id}')">
           <div>
             <div class="group-name">${escHtml(g.groupName)}</div>
-            <div class="group-meta">${g.guests.length} os. · ${yes} będą · ${pending} oczekuje · kod: <strong>${g.code}</strong></div>
+            <div class="group-meta">${guests.length} os. · ${yes} będą · ${pending} oczekuje · kod: <strong>${escHtml(g.code)}</strong></div>
           </div>
           <div class="group-actions">
             ${statusBadge}
@@ -344,10 +370,10 @@ function renderGroups() {
             <div class="qr-row">
               <div class="qr-box" id="qr-${g.id}"></div>
               <div class="qr-link">
-                <strong>Kod: ${g.code}</strong>
-                ${rsvpLink}
+                <strong>Kod: ${escHtml(g.code)}</strong>
+                ${escHtml(rsvpLink)}
                 <br><button class="btn-sm rose" style="margin-top:6px" onclick="copyLink('${rsvpLink}')">Kopiuj link</button>
-                <button class="btn-sm" style="margin-top:6px;margin-left:4px" onclick="downloadQR('${g.id}','${g.groupName}')">Pobierz QR</button>
+                <button class="btn-sm" style="margin-top:6px;margin-left:4px" onclick="downloadQR('${g.id}','${escapeJs(g.groupName)}')">Pobierz QR</button>
               </div>
             </div>
           </div>
@@ -358,14 +384,17 @@ function renderGroups() {
 
   groups.forEach(g => {
     setTimeout(() => {
-      const el = document.getElementById(`qr-${g.id}`);
-      if (el && !el.querySelector('canvas')) {
+      const qrEl = document.getElementById(`qr-${g.id}`);
+      if (qrEl && !qrEl.querySelector('canvas')) {
         try {
-          new QRCode(el, {
-            text: `${RSVP_BASE_URL}?kod=${g.code}`,
-            width: 100, height: 100, colorDark: '#2d2020', colorLight: '#ffffff'
+          new QRCode(qrEl, {
+            text: `${RSVP_BASE_URL}?kod=${encodeURIComponent(g.code)}`,
+            width: 100,
+            height: 100,
+            colorDark: '#2d2020',
+            colorLight: '#ffffff'
           });
-        } catch(e) {}
+        } catch (e) {}
       }
     }, 100);
   });
@@ -378,13 +407,16 @@ function toggleGroup(id) {
 
 function renderResponses() {
   const el = document.getElementById('tab-responses');
-  const allGuests = groups.flatMap(g => g.guests.map(guest => ({
-    ...guest,
-    groupName: g.groupName,
-    submittedAt: g.submittedAt,
-    musicDedication: g.musicDedication,
-    message: g.message
-  }))).filter(g => g.rsvp);
+
+  const allGuests = groups.flatMap(g =>
+    (g.guests || []).map(guest => ({
+      ...guest,
+      groupName: g.groupName,
+      submittedAt: g.submittedAt,
+      musicDedication: g.musicDedication,
+      message: g.message
+    }))
+  ).filter(g => g.rsvp);
 
   if (!allGuests.length) {
     el.innerHTML = '<div class="empty-state">Brak odpowiedzi jeszcze.</div>';
@@ -399,16 +431,24 @@ function renderResponses() {
           <th>Dieta</th><th>Uwagi</th><th>Data</th>
         </tr></thead>
         <tbody>
-          ${allGuests.map(g => `
-            <tr>
-              <td>${escHtml(g.name)}${g.type==='child'?` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>`:g.type==='plus1'?` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>`:''}</td>
-              <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
-              <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
-              <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(g.diet||'—')}</td>
-              <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes||'—')}</td>
-              <td style="color:var(--text-muted);font-size:0.75rem">${g.submittedAt||'—'}</td>
-            </tr>
-          `).join('')}
+          ${allGuests.map(g => {
+            const guestDisplayName = g.type === 'plus1'
+              ? (g.plus1Name || g.name || 'Osoba towarzysząca')
+              : g.name;
+
+            const dietText = Array.isArray(g.diet) ? g.diet.join(', ') : (g.diet || '');
+
+            return `
+              <tr>
+                <td>${escHtml(guestDisplayName)}${g.type === 'child' ? ` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>` : g.type === 'plus1' ? ` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>` : ''}</td>
+                <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
+                <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
+                <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(dietText || '—')}</td>
+                <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes || '—')}</td>
+                <td style="color:var(--text-muted);font-size:0.75rem">${escHtml(g.submittedAt || '—')}</td>
+              </tr>
+            `;
+          }).join('')}
         </tbody>
       </table>
     </div>
@@ -422,11 +462,11 @@ function renderSettings() {
       <h3>Konfiguracja systemu</h3>
       <div class="setting-row">
         <label>URL strony RSVP (do ustawienia w index.html)</label>
-        <input class="input-field" value="${RSVP_BASE_URL}" readonly>
+        <input class="input-field" value="${escHtml(RSVP_BASE_URL)}" readonly>
       </div>
       <div class="setting-row">
         <label>Google Apps Script URL</label>
-        <input class="input-field" id="script-url-input" value="${SCRIPT_URL}" placeholder="https://script.google.com/...">
+        <input class="input-field" id="script-url-input" value="${escHtml(SCRIPT_URL)}" placeholder="https://script.google.com/...">
         <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px">Wklej tutaj URL swojego skryptu Apps Script</p>
       </div>
     </div>
@@ -450,7 +490,7 @@ function renderSettings() {
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  ['groups','responses','add','settings'].forEach(t => {
+  ['groups', 'responses', 'add', 'settings'].forEach(t => {
     document.getElementById(`tab-${t}`).style.display = t === name ? 'block' : 'none';
   });
   if (name === 'add') renderAddForm();
@@ -458,13 +498,20 @@ function switchTab(name, btn) {
 
 function renderAddForm() {
   const el = document.getElementById('tab-add');
-  const guestInputs = newGuests.map((g,i) => `
+
+  const guestInputs = newGuests.map((g, i) => `
     <div class="guest-input-row">
-      <input class="input-field" style="margin-bottom:0" placeholder="Imię i nazwisko" value="${escHtml(g.name)}" oninput="updateNewGuest(${i},'name',this.value)">
-      <select class="input-field" style="margin-bottom:0;max-width:140px" onchange="updateNewGuest(${i},'type',this.value)">
-        <option value="adult" ${g.type==='adult'?'selected':''}>Dorosły</option>
-        <option value="plus1" ${g.type==='plus1'?'selected':''}>Osoba towarzysząca</option>
-        <option value="child" ${g.type==='child'?'selected':''}>Dziecko</option>
+      <input
+        class="input-field"
+        style="margin-bottom:0"
+        placeholder="${g.type === 'plus1' ? 'Imię uzupełni gość później' : 'Imię i nazwisko'}"
+        value="${escHtml(g.name)}"
+        oninput="updateNewGuest(${i}, 'name', this.value)"
+      >
+      <select class="input-field" style="margin-bottom:0;max-width:140px" onchange="updateNewGuest(${i}, 'type', this.value); renderAddFormPreserveValues()">
+        <option value="adult" ${g.type === 'adult' ? 'selected' : ''}>Dorosły</option>
+        <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba towarzysząca</option>
+        <option value="child" ${g.type === 'child' ? 'selected' : ''}>Dziecko</option>
       </select>
       <button class="remove-guest" onclick="removeNewGuest(${i})">×</button>
     </div>
@@ -494,12 +541,24 @@ function renderAddForm() {
   `;
 }
 
-function updateNewGuest(i, field, val) { newGuests[i][field] = val; }
+function renderAddFormPreserveValues() {
+  const savedName = document.getElementById('new-group-name')?.value || '';
+  const savedCode = document.getElementById('new-group-code')?.value || '';
+  renderAddForm();
+  const nameInput = document.getElementById('new-group-name');
+  const codeInput = document.getElementById('new-group-code');
+  if (nameInput) nameInput.value = savedName;
+  if (codeInput) codeInput.value = savedCode;
+}
+
+function updateNewGuest(i, field, val) {
+  newGuests[i][field] = val;
+}
 
 function addNewGuestRow() {
   const savedName = document.getElementById('new-group-name')?.value || '';
   const savedCode = document.getElementById('new-group-code')?.value || '';
-  newGuests.push({ name: '', type: 'adult' });
+  newGuests.push({ name: '', type: 'adult', plus1Name: '' });
   renderAddForm();
   document.getElementById('new-group-name').value = savedName;
   document.getElementById('new-group-code').value = savedCode;
@@ -516,7 +575,7 @@ function removeNewGuest(i) {
 }
 
 function generateCode(name) {
-  const clean = name.replace(/\s+/g,'').toUpperCase().slice(0,3);
+  const clean = name.replace(/\s+/g, '').toUpperCase().slice(0, 3);
   return clean + Math.floor(100 + Math.random() * 900);
 }
 
@@ -524,33 +583,61 @@ async function saveGroup() {
   const nameEl = document.getElementById('new-group-name');
   const codeEl = document.getElementById('new-group-code');
   const statusEl = document.getElementById('add-status');
+
   const groupName = nameEl.value.trim();
-  if (!groupName) { alert('Podaj nazwę grupy'); return; }
-  const filledGuests = newGuests.filter(g => g.name.trim());
-  if (!filledGuests.length) { alert('Dodaj przynajmniej jedną osobę'); return; }
+  if (!groupName) {
+    alert('Podaj nazwę grupy');
+    return;
+  }
+
+  const filledGuests = newGuests.filter(g => {
+    if (g.type === 'plus1') return true;
+    return (g.name || '').trim();
+  });
+
+  if (!filledGuests.length) {
+    alert('Dodaj przynajmniej jedną osobę');
+    return;
+  }
+
   const code = codeEl.value.trim() || generateCode(groupName);
+  const timestamp = Date.now();
+
   const newGroup = {
-    id: 'grp' + Date.now(), groupName, code,
-    submittedAt: null, musicDedication: '', message: '',
-    guests: filledGuests.map((g, i) => ({ id: `g${Date.now()}${i}`, name: g.name.trim(), type: g.type, rsvp: null, diet: '', notes: '', childAge: '' }))
+    id: 'grp' + timestamp,
+    groupName,
+    code,
+    submittedAt: null,
+    musicDedication: '',
+    message: '',
+    guests: filledGuests.map((g, i) => ({
+      id: `g${timestamp}${i}`,
+      name: g.type === 'plus1' ? 'Osoba towarzysząca' : g.name.trim(),
+      type: g.type,
+      rsvp: null,
+      diet: '',
+      notes: '',
+      childAge: '',
+      plus1Name: ''
+    }))
   };
 
   try {
-    const resp = await fetch(SCRIPT_URL, { 
-      method: 'POST', 
-      body: JSON.stringify({ action: 'addGroup', group: newGroup }) 
+    const resp = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'addGroup', group: newGroup })
     });
     const data = await resp.json();
     if (data.error) throw new Error(data.error);
 
     groups.push(newGroup);
-    newGuests = [{ name: '', type: 'adult' }];
+    newGuests = [{ name: '', type: 'adult', plus1Name: '' }];
     renderAll();
     statusEl.style.display = 'block';
     statusEl.style.color = 'var(--green)';
     statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
     setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
-  } catch(e) {
+  } catch (e) {
     alert('Błąd zapisu: ' + e.message);
   }
 }
@@ -570,24 +657,35 @@ function downloadQR(groupId, groupName) {
   const canvas = qrEl ? qrEl.querySelector('canvas') : null;
   if (!canvas) return;
   const a = document.createElement('a');
-  a.download = `QR_${groupName.replace(/\s+/g,'_')}.png`;
+  a.download = `QR_${groupName.replace(/\s+/g, '_')}.png`;
   a.href = canvas.toDataURL();
   a.click();
 }
 
 function exportCSV() {
-  const rows = [['Imię i nazwisko','Typ','Grupa','Odpowiedź','Dieta','Uwagi','Wiek dziecka','Dedykacja muzyczna','Wiadomość','Data odpowiedzi']];
+  const rows = [['Imię i nazwisko', 'Typ', 'Grupa', 'Odpowiedź', 'Dieta', 'Uwagi', 'Wiek dziecka', 'Dedykacja muzyczna', 'Wiadomość', 'Data odpowiedzi']];
   groups.forEach(g => {
-    g.guests.forEach(guest => {
+    (g.guests || []).forEach(guest => {
+      const guestDisplayName = guest.type === 'plus1'
+        ? (guest.plus1Name || guest.name || 'Osoba towarzysząca')
+        : guest.name;
+
       rows.push([
-        guest.name, guest.type === 'child' ? 'Dziecko' : 'Dorosły',
-        g.groupName, guest.rsvp === 'yes' ? 'Będę' : guest.rsvp === 'no' ? 'Nie będę' : 'Oczekuje',
-        guest.diet||'', guest.notes||'', guest.childAge||'',
-        g.musicDedication||'', g.message||'', g.submittedAt||''
+        guestDisplayName,
+        guest.type === 'child' ? 'Dziecko' : guest.type === 'plus1' ? 'Osoba towarzysząca' : 'Dorosły',
+        g.groupName,
+        guest.rsvp === 'yes' ? 'Będę' : guest.rsvp === 'no' ? 'Nie będę' : 'Oczekuje',
+        Array.isArray(guest.diet) ? guest.diet.join(', ') : (guest.diet || ''),
+        guest.notes || '',
+        guest.childAge || '',
+        g.musicDedication || '',
+        g.message || '',
+        g.submittedAt || ''
       ]);
     });
   });
-  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -601,8 +699,9 @@ let editGuests = [];
 function openEditModal(groupId) {
   const g = groups.find(g => g.id === groupId);
   if (!g) return;
+
   editingGroupId = groupId;
-  editGuests = g.guests.map(guest => ({ ...guest }));
+  editGuests = (g.guests || []).map(guest => ({ ...guest }));
   document.getElementById('edit-group-name').value = g.groupName;
   renderEditGuests();
   document.getElementById('edit-modal').classList.add('open');
@@ -619,12 +718,17 @@ function renderEditGuests() {
   const list = document.getElementById('edit-guests-list');
   list.innerHTML = editGuests.map((g, i) => `
     <div class="modal-guest-row">
-      <input class="input-field" style="margin-bottom:0" placeholder="Imię i nazwisko"
-        value="${escHtml(g.name)}" oninput="editGuests[${i}].name=this.value">
-      <select class="input-field" style="margin-bottom:0;max-width:150px" onchange="editGuests[${i}].type=this.value">
-        <option value="adult" ${g.type==='adult'?'selected':''}>Dorosły</option>
-        <option value="plus1" ${g.type==='plus1'?'selected':''}>Osoba towarzysząca</option>
-        <option value="child" ${g.type==='child'?'selected':''}>Dziecko</option>
+      <input
+        class="input-field"
+        style="margin-bottom:0"
+        placeholder="${g.type === 'plus1' ? 'Imię uzupełni gość później' : 'Imię i nazwisko'}"
+        value="${escHtml(g.type === 'plus1' && g.name === 'Osoba towarzysząca' ? '' : (g.name || ''))}"
+        oninput="editGuests[${i}].name=this.value"
+      >
+      <select class="input-field" style="margin-bottom:0;max-width:150px" onchange="editGuests[${i}].type=this.value; renderEditGuests()">
+        <option value="adult" ${g.type === 'adult' ? 'selected' : ''}>Dorosły</option>
+        <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba towarzysząca</option>
+        <option value="child" ${g.type === 'child' ? 'selected' : ''}>Dziecko</option>
       </select>
       <button class="remove-guest" onclick="removeEditGuest(${i})">×</button>
     </div>
@@ -632,7 +736,16 @@ function renderEditGuests() {
 }
 
 function addEditGuestRow() {
-  editGuests.push({ id: 'g' + Date.now(), name: '', type: 'adult', rsvp: null, diet: '', notes: '', childAge: '' });
+  editGuests.push({
+    id: 'g' + Date.now(),
+    name: '',
+    type: 'adult',
+    rsvp: null,
+    diet: '',
+    notes: '',
+    childAge: '',
+    plus1Name: ''
+  });
   renderEditGuests();
 }
 
@@ -644,9 +757,26 @@ function removeEditGuest(i) {
 
 async function saveEditGroup() {
   const groupName = document.getElementById('edit-group-name').value.trim();
-  if (!groupName) { alert('Podaj nazwę grupy'); return; }
-  const filledGuests = editGuests.filter(g => g.name.trim());
-  if (!filledGuests.length) { alert('Dodaj przynajmniej jedną osobę'); return; }
+  if (!groupName) {
+    alert('Podaj nazwę grupy');
+    return;
+  }
+
+  const filledGuests = editGuests
+    .filter(g => {
+      if (g.type === 'plus1') return true;
+      return (g.name || '').trim();
+    })
+    .map(g => ({
+      ...g,
+      name: g.type === 'plus1' ? (g.name || 'Osoba towarzysząca') : (g.name || '').trim(),
+      plus1Name: g.plus1Name || ''
+    }));
+
+  if (!filledGuests.length) {
+    alert('Dodaj przynajmniej jedną osobę');
+    return;
+  }
 
   const statusEl = document.getElementById('edit-status');
   const g = groups.find(g => g.id === editingGroupId);
@@ -665,13 +795,14 @@ async function saveEditGroup() {
     statusEl.style.color = 'var(--green)';
     statusEl.textContent = 'Zapisano!';
     setTimeout(() => { closeEditModal(); renderAll(); }, 800);
-  } catch(e) {
+  } catch (e) {
     alert('Błąd zapisu: ' + e.message);
   }
 }
 
 async function deleteGroup() {
   const g = groups.find(g => g.id === editingGroupId);
+  if (!g) return;
   if (!confirm(`Usunąć grupę "${g.groupName}"? Tej operacji nie można cofnąć.`)) return;
 
   try {
@@ -685,14 +816,27 @@ async function deleteGroup() {
     groups = groups.filter(g => g.id !== editingGroupId);
     closeEditModal();
     renderAll();
-  } catch(e) {
+  } catch (e) {
     alert('Błąd usuwania: ' + e.message);
   }
 }
 
 function escHtml(str) {
   if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function escapeJs(str) {
+  return String(str || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ');
 }
 </script>
 </body>
