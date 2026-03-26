@@ -181,6 +181,27 @@
   .add-guest-btn { font-size: 0.78rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; padding: 0; }
   .add-guest-btn:hover { text-decoration: underline; }
 
+  .responses-toolbar {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .responses-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  .responses-filters .form-group {
+    margin-bottom: 0;
+  }
+  .responses-summary {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+  }
+
   .responses-table { background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border); overflow: hidden; }
   .responses-table table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
   .responses-table th { padding: 0.6rem 0.9rem; text-align: left; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); border-bottom: 0.5px solid var(--border); font-weight: 500; }
@@ -304,6 +325,12 @@ let groups = [];
 let newGuests = [{ name: '', type: 'adult', plus1Name: '', category: 'family_bride' }];
 let editingGroupId = null;
 let editGuests = [];
+let responsesFilters = {
+  category: 'all',
+  response: 'all',
+  group: 'all',
+  dateOrder: 'newest'
+};
 
 function getCategoryMeta(category) {
   return GUEST_CATEGORIES[category] || GUEST_CATEGORIES.family_bride;
@@ -328,6 +355,11 @@ function applyCategoryToAllNewGuests(category) {
 function applyCategoryToAllEditGuests(category) {
   editGuests = editGuests.map(g => ({ ...g, category }));
   renderEditGuests();
+}
+
+function updateResponsesFilter(field, value) {
+  responsesFilters[field] = value;
+  renderResponses();
 }
 
 function formatDateTime(dateStr) {
@@ -571,7 +603,7 @@ function toggleGroup(id) {
 function renderResponses() {
   const el = document.getElementById('tab-responses');
 
-  const allGuests = groups.flatMap(g =>
+  const allRows = groups.flatMap(g =>
     (g.guests || []).map(guest => ({
       ...guest,
       groupName: g.groupName,
@@ -579,52 +611,137 @@ function renderResponses() {
       musicDedication: g.musicDedication,
       message: g.message
     }))
-  )
-  .filter(g => g.rsvp)
-  .sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+  ).filter(g => g.rsvp);
 
-  if (!allGuests.length) {
+  if (!allRows.length) {
     el.innerHTML = '<div class="empty-state">Brak odpowiedzi jeszcze.</div>';
     return;
   }
 
+  const uniqueGroups = [...new Set(allRows.map(g => g.groupName).filter(Boolean))].sort((a, b) =>
+    a.localeCompare(b, 'pl')
+  );
+
+  let filteredRows = [...allRows];
+
+  if (responsesFilters.category !== 'all') {
+    filteredRows = filteredRows.filter(
+      g => (g.category || 'family_bride') === responsesFilters.category
+    );
+  }
+
+  if (responsesFilters.response !== 'all') {
+    filteredRows = filteredRows.filter(g => g.rsvp === responsesFilters.response);
+  }
+
+  if (responsesFilters.group !== 'all') {
+    filteredRows = filteredRows.filter(g => g.groupName === responsesFilters.group);
+  }
+
+  filteredRows.sort((a, b) => {
+    const dateA = new Date(a.submittedAt || 0).getTime();
+    const dateB = new Date(b.submittedAt || 0).getTime();
+
+    return responsesFilters.dateOrder === 'oldest'
+      ? dateA - dateB
+      : dateB - dateA;
+  });
+
   el.innerHTML = `
-    <div class="responses-table">
-      <table>
-        <thead><tr>
-          <th>Imię i nazwisko</th><th>Grupa</th><th>Filtr</th><th>Odpowiedź</th>
-          <th>Dieta</th><th>Uwagi</th><th>Data</th>
-        </tr></thead>
-        <tbody>
-          ${allGuests.map(g => {
-            const guestDisplayName = g.type === 'plus1'
-              ? (g.plus1Name || g.name || 'Osoba towarzysząca')
-              : g.name;
+    <div class="responses-toolbar">
+      <div class="responses-filters">
+        <div class="form-group">
+          <label>Filtr</label>
+          <select class="input-field" style="margin-bottom:0" onchange="updateResponsesFilter('category', this.value)">
+            <option value="all" ${responsesFilters.category === 'all' ? 'selected' : ''}>Wszystkie</option>
+            ${Object.entries(GUEST_CATEGORIES).map(([key, meta]) => `
+              <option value="${key}" ${responsesFilters.category === key ? 'selected' : ''}>${meta.label}</option>
+            `).join('')}
+          </select>
+        </div>
 
-            const dietText = Array.isArray(g.diet) ? g.diet.join(', ') : (g.diet || '');
+        <div class="form-group">
+          <label>Odpowiedź</label>
+          <select class="input-field" style="margin-bottom:0" onchange="updateResponsesFilter('response', this.value)">
+            <option value="all" ${responsesFilters.response === 'all' ? 'selected' : ''}>Wszystkie</option>
+            <option value="yes" ${responsesFilters.response === 'yes' ? 'selected' : ''}>Będę</option>
+            <option value="no" ${responsesFilters.response === 'no' ? 'selected' : ''}>Nie będę</option>
+          </select>
+        </div>
 
-            return `
-              <tr>
-                <td>
-                  ${escHtml(guestDisplayName)}
-                  ${g.type === 'child'
-                    ? ` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>`
-                    : g.type === 'plus1'
-                    ? ` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>`
-                    : ''}
-                </td>
-                <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
-                <td>${getCategoryBadge(g.category || 'family_bride')}</td>
-                <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
-                <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(dietText || '—')}</td>
-                <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes || '—')}</td>
-                <td>${formatDateTime(g.submittedAt || '')}</td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      </table>
+        <div class="form-group">
+          <label>Grupa</label>
+          <select class="input-field" style="margin-bottom:0" onchange="updateResponsesFilter('group', this.value)">
+            <option value="all" ${responsesFilters.group === 'all' ? 'selected' : ''}>Wszystkie grupy</option>
+            ${uniqueGroups.map(groupName => `
+              <option value="${escHtml(groupName)}" ${responsesFilters.group === groupName ? 'selected' : ''}>${escHtml(groupName)}</option>
+            `).join('')}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Data</label>
+          <select class="input-field" style="margin-bottom:0" onchange="updateResponsesFilter('dateOrder', this.value)">
+            <option value="newest" ${responsesFilters.dateOrder === 'newest' ? 'selected' : ''}>Od najnowszych</option>
+            <option value="oldest" ${responsesFilters.dateOrder === 'oldest' ? 'selected' : ''}>Od najstarszych</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="responses-summary">
+        Pokazano <strong>${filteredRows.length}</strong> z <strong>${allRows.length}</strong> odpowiedzi.
+      </div>
     </div>
+
+    ${
+      filteredRows.length
+        ? `
+        <div class="responses-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Imię i nazwisko</th>
+                <th>Grupa</th>
+                <th>Filtr</th>
+                <th>Odpowiedź</th>
+                <th>Dieta</th>
+                <th>Uwagi</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filteredRows.map(g => {
+                const guestDisplayName = g.type === 'plus1'
+                  ? (g.plus1Name || g.name || 'Osoba towarzysząca')
+                  : g.name;
+
+                const dietText = Array.isArray(g.diet) ? g.diet.join(', ') : (g.diet || '');
+
+                return `
+                  <tr>
+                    <td>
+                      ${escHtml(guestDisplayName)}
+                      ${g.type === 'child'
+                        ? ` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>`
+                        : g.type === 'plus1'
+                        ? ` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>`
+                        : ''}
+                    </td>
+                    <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
+                    <td>${getCategoryBadge(g.category || 'family_bride')}</td>
+                    <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
+                    <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(dietText || '—')}</td>
+                    <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes || '—')}</td>
+                    <td>${formatDateTime(g.submittedAt || '')}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+        `
+        : `<div class="empty-state">Brak odpowiedzi dla wybranych filtrów.</div>`
+    }
   `;
 }
 
