@@ -61,6 +61,50 @@
   .stat-value.green { color: var(--green); }
   .stat-value.gold { color: var(--gold); }
 
+  .filter-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 8px;
+    margin: -0.4rem 0 1.5rem;
+  }
+  .mini-stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 0.5px solid var(--border);
+    padding: 0.7rem 0.85rem;
+  }
+  .mini-stat-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 0.45rem;
+  }
+  .mini-stat-title .badge {
+    font-size: 0.62rem;
+    padding: 0.18rem 0.45rem;
+  }
+  .mini-stat-values {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mini-stat-pill {
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 0.22rem 0.52rem;
+    font-weight: 500;
+  }
+  .mini-stat-pill.yes {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 0.5px solid var(--green-border);
+  }
+  .mini-stat-pill.no {
+    background: var(--rose-light);
+    color: var(--rose);
+    border: 0.5px solid var(--rose-mid);
+  }
+
   .tabs { display: flex; gap: 4px; margin-bottom: 1.25rem; border-bottom: 0.5px solid var(--border); padding-bottom: 0; }
   .tab-btn {
     padding: 0.6rem 1.2rem; font-family: 'Jost', sans-serif; font-size: 0.83rem;
@@ -76,7 +120,7 @@
   }
   .group-header {
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    padding: 1rem 1.25rem; cursor: pointer; flex-wrap: wrap; gap: 8px;
+    padding: 1rem 1.25rem; cursor: pointer; flex-wrap: wrap;
   }
   .group-name { font-size: 0.95rem; font-weight: 500; }
   .group-meta { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
@@ -87,6 +131,11 @@
   .badge.yes { background: var(--green-bg); color: var(--green); border: 0.5px solid var(--green-border); }
   .badge.no { background: var(--rose-light); color: var(--rose); border: 0.5px solid var(--rose-mid); }
   .badge.pending { background: var(--gold-light); color: var(--gold); border: 0.5px solid var(--gold-mid); }
+  .badge.family-bride { background: #fdecef; color: #b14d6f; border: 0.5px solid #efbfd0; }
+  .badge.family-groom { background: #eef3ff; color: #4c67b1; border: 0.5px solid #c6d4fb; }
+  .badge.friends-groom { background: #edf8f1; color: #2f8a57; border: 0.5px solid #bfe4cb; }
+  .badge.friends-bride { background: #fff4e8; color: #b97a26; border: 0.5px solid #ecd1ab; }
+
   .btn-sm {
     padding: 0.3rem 0.75rem; border-radius: 8px; border: 0.5px solid var(--border);
     font-family: 'Jost', sans-serif; font-size: 0.75rem; cursor: pointer;
@@ -107,6 +156,7 @@
   .guest-row-name { font-size: 0.88rem; font-weight: 500; }
   .guest-row-diet { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
   .guest-row-notes { font-size: 0.75rem; color: var(--rose); margin-top: 2px; font-style: italic; }
+  .guest-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 
   .qr-section { margin-top: 1rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
   .qr-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
@@ -121,11 +171,11 @@
   }
   .add-form h3 { font-size: 0.85rem; font-weight: 500; margin-bottom: 1rem; color: var(--text); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .group-filter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .form-group label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px; }
   .guests-builder { margin: 10px 0; }
   .guest-input-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
-  .guest-input-row input, .guest-input-row select { flex: 1; }
-  .guest-input-row select { max-width: 110px; }
+  .guest-input-row input, .guest-input-row select { flex: 1; min-width: 0; }
   .remove-guest { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; line-height: 1; padding: 0 4px; }
   .remove-guest:hover { color: var(--rose); }
   .add-guest-btn { font-size: 0.78rem; color: var(--rose); background: none; border: none; cursor: pointer; font-family: 'Jost', sans-serif; padding: 0; }
@@ -137,6 +187,9 @@
   .responses-table td { padding: 0.65rem 0.9rem; border-bottom: 0.5px solid var(--border); vertical-align: top; }
   .responses-table tr:last-child td { border-bottom: none; }
   .responses-table tr:hover td { background: var(--cream); }
+  .responses-date { min-width: 126px; line-height: 1.2; }
+  .responses-date-main { font-size: 0.83rem; font-weight: 500; color: var(--text); }
+  .responses-date-time { font-size: 0.74rem; color: var(--text-muted); margin-top: 3px; }
 
   .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 0.88rem; }
 
@@ -153,24 +206,29 @@
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--white); border-radius: var(--radius); border: 0.5px solid var(--border);
-    padding: 1.5rem; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto;
+    padding: 1.5rem; max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto;
   }
   .modal-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
   .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; }
   .modal-close:hover { color: var(--rose); }
   .modal-section-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; margin-top: 1rem; }
   .modal-guest-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
-  .modal-guest-row input, .modal-guest-row select { flex: 1; margin-bottom: 0; }
-  .modal-guest-row select { max-width: 140px; }
+  .modal-guest-row input, .modal-guest-row select { flex: 1; margin-bottom: 0; min-width: 0; }
   .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; justify-content: flex-end; }
   .btn-danger { background: var(--rose-light); color: var(--rose); border: 0.5px solid var(--rose-mid); border-radius: 8px; padding: 0.5rem 1rem; font-family: 'Jost', sans-serif; font-size: 0.82rem; cursor: pointer; }
   .btn-danger:hover { background: var(--rose); color: white; }
   .btn-save { background: var(--rose); color: white; border: none; border-radius: 8px; padding: 0.5rem 1.25rem; font-family: 'Jost', sans-serif; font-size: 0.82rem; cursor: pointer; font-weight: 500; }
   .btn-save:hover { background: #b36379; }
 
+  @media (max-width: 700px) {
+    .responses-table { overflow-x: auto; }
+  }
+
   @media (max-width: 600px) {
     .form-row { grid-template-columns: 1fr; }
+    .group-filter-row { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr 1fr; }
+    .filter-stats-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -235,8 +293,72 @@ const ADMIN_PASSWORD = 'wesele2027';
 const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/gosc';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLFYRvEW6kCUEtTSqAF30qsXLsmD1pulIuexB8TTgj4XYljeVV0cWMNapXJ5h66iskvA/exec';
 
+const GUEST_CATEGORIES = {
+  family_bride: { label: 'Rodzina Panny Młodej', badgeClass: 'family-bride' },
+  family_groom: { label: 'Rodzina Pana Młodego', badgeClass: 'family-groom' },
+  friends_groom: { label: 'Znajomi Pana Młodego', badgeClass: 'friends-groom' },
+  friends_bride: { label: 'Znajomi Panny Młodej', badgeClass: 'friends-bride' }
+};
+
 let groups = [];
-let newGuests = [{ name: '', type: 'adult', plus1Name: '' }];
+let newGuests = [{ name: '', type: 'adult', plus1Name: '', category: 'family_bride' }];
+let editingGroupId = null;
+let editGuests = [];
+
+function getCategoryMeta(category) {
+  return GUEST_CATEGORIES[category] || GUEST_CATEGORIES.family_bride;
+}
+
+function renderCategoryOptions(selected) {
+  return Object.entries(GUEST_CATEGORIES).map(([key, meta]) => `
+    <option value="${key}" ${selected === key ? 'selected' : ''}>${meta.label}</option>
+  `).join('');
+}
+
+function getCategoryBadge(category) {
+  const meta = getCategoryMeta(category || 'family_bride');
+  return `<span class="badge ${meta.badgeClass}">${meta.label}</span>`;
+}
+
+function applyCategoryToAllNewGuests(category) {
+  newGuests = newGuests.map(g => ({ ...g, category }));
+  renderAddFormPreserveValues();
+}
+
+function applyCategoryToAllEditGuests(category) {
+  editGuests = editGuests.map(g => ({ ...g, category }));
+  renderEditGuests();
+}
+
+function formatDateTime(dateStr) {
+  if (!dateStr) {
+    return `
+      <div class="responses-date">
+        <div class="responses-date-main">—</div>
+      </div>
+    `;
+  }
+
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) {
+    return `
+      <div class="responses-date">
+        <div class="responses-date-main">${escHtml(dateStr)}</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="responses-date">
+      <div class="responses-date-main">${d.toLocaleDateString('pl-PL', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      })}</div>
+      <div class="responses-date-time">${d.toLocaleTimeString('pl-PL', {
+        hour: '2-digit', minute: '2-digit'
+      })}</div>
+    </div>
+  `;
+}
 
 function login() {
   const pw = document.getElementById('password-input').value;
@@ -256,12 +378,22 @@ function logout() {
   document.getElementById('password-input').value = '';
 }
 
+function normalizeGroupData(data) {
+  return (Array.isArray(data) ? data : []).map(group => ({
+    ...group,
+    guests: (group.guests || []).map(guest => ({
+      ...guest,
+      category: guest.category || 'family_bride'
+    }))
+  }));
+}
+
 function loadData() {
   renderStats();
   fetch(`${SCRIPT_URL}?action=getAllGroups`)
     .then(r => r.json())
     .then(data => {
-      groups = Array.isArray(data) ? data : [];
+      groups = normalizeGroupData(data);
       renderAll();
     })
     .catch(() => {
@@ -292,6 +424,34 @@ function renderStats() {
     <div class="stat-card"><div class="stat-label">Grup łącznie</div><div class="stat-value">${groups.length}</div></div>
     <div class="stat-card"><div class="stat-label">Odpowiedziało grup</div><div class="stat-value">${responded}</div></div>
   `;
+
+  const byCategoryHtml = Object.entries(GUEST_CATEGORIES).map(([key, meta]) => {
+    const guests = allGuests.filter(g => (g.category || 'family_bride') === key);
+    const yesCount = guests.filter(g => g.rsvp === 'yes').length;
+    const noCount = guests.filter(g => g.rsvp === 'no').length;
+
+    return `
+      <div class="mini-stat-card">
+        <div class="mini-stat-title">
+          <span class="badge ${meta.badgeClass}">${meta.label}</span>
+        </div>
+        <div class="mini-stat-values">
+          <span class="mini-stat-pill yes">Tak: ${yesCount}</span>
+          <span class="mini-stat-pill no">Nie: ${noCount}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const existing = document.getElementById('filter-stats-grid');
+  if (existing) existing.remove();
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'filter-stats-grid';
+  wrapper.id = 'filter-stats-grid';
+  wrapper.innerHTML = byCategoryHtml;
+
+  document.getElementById('stats-grid').insertAdjacentElement('afterend', wrapper);
 }
 
 function renderGroups() {
@@ -320,13 +480,14 @@ function renderGroups() {
       return `
         <div class="guest-row">
           <div>
-            <div class="guest-row-name">
-              ${escHtml(guestDisplayName)}
+            <div class="guest-row-name">${escHtml(guestDisplayName)}</div>
+            <div class="guest-badges">
               ${guest.type === 'child'
-                ? `<span style="font-size:0.7rem;color:var(--gold)">dziecko${guest.childAge ? ' (' + guest.childAge + ' lat)' : ''}</span>`
+                ? `<span class="badge pending">dziecko${guest.childAge ? ' (' + guest.childAge + ' lat)' : ''}</span>`
                 : guest.type === 'plus1'
-                ? `<span style="font-size:0.7rem;color:#7c68c4">+1 / osoba towarzysząca</span>`
+                ? `<span class="badge pending">+1 / osoba towarzysząca</span>`
                 : ''}
+              ${getCategoryBadge(guest.category || 'family_bride')}
             </div>
             ${dietText ? `<div class="guest-row-diet">${escHtml(dietText)}</div>` : ''}
             ${guest.notes ? `<div class="guest-row-notes">${escHtml(guest.notes)}</div>` : ''}
@@ -343,13 +504,14 @@ function renderGroups() {
     }).join('');
 
     const rsvpLink = `${RSVP_BASE_URL}?kod=${encodeURIComponent(g.code)}`;
+    const groupCategoryLabel = guests[0]?.category ? getCategoryMeta(guests[0].category).label : '';
 
     return `
       <div class="group-card">
         <div class="group-header" onclick="toggleGroup('${g.id}')">
           <div>
             <div class="group-name">${escHtml(g.groupName)}</div>
-            <div class="group-meta">${guests.length} os. · ${yes} będą · ${pending} oczekuje · kod: <strong>${escHtml(g.code)}</strong></div>
+            <div class="group-meta">${guests.length} os. · ${yes} będą · ${no} nie będą · ${pending} oczekuje · kod: <strong>${escHtml(g.code)}</strong>${groupCategoryLabel ? ` · ${groupCategoryLabel}` : ''}</div>
           </div>
           <div class="group-actions">
             ${statusBadge}
@@ -387,6 +549,7 @@ function renderGroups() {
       const qrEl = document.getElementById(`qr-${g.id}`);
       if (qrEl && !qrEl.querySelector('canvas')) {
         try {
+          qrEl.innerHTML = '';
           new QRCode(qrEl, {
             text: `${RSVP_BASE_URL}?kod=${encodeURIComponent(g.code)}`,
             width: 100,
@@ -402,7 +565,7 @@ function renderGroups() {
 
 function toggleGroup(id) {
   const el = document.getElementById(`details-${id}`);
-  el.classList.toggle('open');
+  if (el) el.classList.toggle('open');
 }
 
 function renderResponses() {
@@ -416,7 +579,9 @@ function renderResponses() {
       musicDedication: g.musicDedication,
       message: g.message
     }))
-  ).filter(g => g.rsvp);
+  )
+  .filter(g => g.rsvp)
+  .sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
 
   if (!allGuests.length) {
     el.innerHTML = '<div class="empty-state">Brak odpowiedzi jeszcze.</div>';
@@ -427,7 +592,7 @@ function renderResponses() {
     <div class="responses-table">
       <table>
         <thead><tr>
-          <th>Imię i nazwisko</th><th>Grupa</th><th>Odpowiedź</th>
+          <th>Imię i nazwisko</th><th>Grupa</th><th>Filtr</th><th>Odpowiedź</th>
           <th>Dieta</th><th>Uwagi</th><th>Data</th>
         </tr></thead>
         <tbody>
@@ -440,12 +605,20 @@ function renderResponses() {
 
             return `
               <tr>
-                <td>${escHtml(guestDisplayName)}${g.type === 'child' ? ` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>` : g.type === 'plus1' ? ` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>` : ''}</td>
+                <td>
+                  ${escHtml(guestDisplayName)}
+                  ${g.type === 'child'
+                    ? ` <span style="font-size:0.7rem;color:var(--gold)">(dziecko)</span>`
+                    : g.type === 'plus1'
+                    ? ` <span style="font-size:0.7rem;color:#7c68c4">(+1)</span>`
+                    : ''}
+                </td>
                 <td style="color:var(--text-muted)">${escHtml(g.groupName)}</td>
+                <td>${getCategoryBadge(g.category || 'family_bride')}</td>
                 <td>${g.rsvp === 'yes' ? '<span class="badge yes">Będę</span>' : '<span class="badge no">Nie będę</span>'}</td>
                 <td style="color:var(--text-muted);font-size:0.78rem">${escHtml(dietText || '—')}</td>
                 <td style="color:var(--text-muted);font-size:0.78rem;font-style:italic">${escHtml(g.notes || '—')}</td>
-                <td style="color:var(--text-muted);font-size:0.75rem">${escHtml(g.submittedAt || '—')}</td>
+                <td>${formatDateTime(g.submittedAt || '')}</td>
               </tr>
             `;
           }).join('')}
@@ -498,6 +671,7 @@ function switchTab(name, btn) {
 
 function renderAddForm() {
   const el = document.getElementById('tab-add');
+  const currentGroupCategory = newGuests[0]?.category || 'family_bride';
 
   const guestInputs = newGuests.map((g, i) => `
     <div class="guest-input-row">
@@ -510,8 +684,11 @@ function renderAddForm() {
       >
       <select class="input-field" style="margin-bottom:0;max-width:140px" onchange="updateNewGuest(${i}, 'type', this.value); renderAddFormPreserveValues()">
         <option value="adult" ${g.type === 'adult' ? 'selected' : ''}>Dorosły</option>
-        <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba towarzysząca</option>
+        <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba tow.</option>
         <option value="child" ${g.type === 'child' ? 'selected' : ''}>Dziecko</option>
+      </select>
+      <select class="input-field" style="margin-bottom:0;max-width:220px" onchange="updateNewGuest(${i}, 'category', this.value)">
+        ${renderCategoryOptions(g.category || 'family_bride')}
       </select>
       <button class="remove-guest" onclick="removeNewGuest(${i})">×</button>
     </div>
@@ -530,6 +707,16 @@ function renderAddForm() {
           <input class="input-field" id="new-group-code" placeholder="np. KOW123" style="margin-bottom:0">
         </div>
       </div>
+
+      <div class="group-filter-row">
+        <div class="form-group">
+          <label>Filtr dla całej grupy</label>
+          <select class="input-field" id="new-group-category" style="margin-bottom:0" onchange="applyCategoryToAllNewGuests(this.value)">
+            ${renderCategoryOptions(currentGroupCategory)}
+          </select>
+        </div>
+      </div>
+
       <div class="guests-builder">
         <div class="form-group" style="margin-bottom:8px"><label>Goście w grupie</label></div>
         ${guestInputs}
@@ -558,7 +745,9 @@ function updateNewGuest(i, field, val) {
 function addNewGuestRow() {
   const savedName = document.getElementById('new-group-name')?.value || '';
   const savedCode = document.getElementById('new-group-code')?.value || '';
-  newGuests.push({ name: '', type: 'adult', plus1Name: '' });
+  const selectedCategory = document.getElementById('new-group-category')?.value || newGuests[0]?.category || 'family_bride';
+
+  newGuests.push({ name: '', type: 'adult', plus1Name: '', category: selectedCategory });
   renderAddForm();
   document.getElementById('new-group-name').value = savedName;
   document.getElementById('new-group-code').value = savedCode;
@@ -614,6 +803,7 @@ async function saveGroup() {
       id: `g${timestamp}${i}`,
       name: g.type === 'plus1' ? 'Osoba towarzysząca' : g.name.trim(),
       type: g.type,
+      category: g.category || 'family_bride',
       rsvp: null,
       diet: '',
       notes: '',
@@ -631,7 +821,7 @@ async function saveGroup() {
     if (data.error) throw new Error(data.error);
 
     groups.push(newGroup);
-    newGuests = [{ name: '', type: 'adult', plus1Name: '' }];
+    newGuests = [{ name: '', type: 'adult', plus1Name: '', category: 'family_bride' }];
     renderAll();
     statusEl.style.display = 'block';
     statusEl.style.color = 'var(--green)';
@@ -663,7 +853,7 @@ function downloadQR(groupId, groupName) {
 }
 
 function exportCSV() {
-  const rows = [['Imię i nazwisko', 'Typ', 'Grupa', 'Odpowiedź', 'Dieta', 'Uwagi', 'Wiek dziecka', 'Dedykacja muzyczna', 'Wiadomość', 'Data odpowiedzi']];
+  const rows = [['Imię i nazwisko', 'Typ', 'Filtr', 'Grupa', 'Odpowiedź', 'Dieta', 'Uwagi', 'Wiek dziecka', 'Dedykacja muzyczna', 'Wiadomość', 'Data odpowiedzi']];
   groups.forEach(g => {
     (g.guests || []).forEach(guest => {
       const guestDisplayName = guest.type === 'plus1'
@@ -673,6 +863,7 @@ function exportCSV() {
       rows.push([
         guestDisplayName,
         guest.type === 'child' ? 'Dziecko' : guest.type === 'plus1' ? 'Osoba towarzysząca' : 'Dorosły',
+        getCategoryMeta(guest.category || 'family_bride').label,
         g.groupName,
         guest.rsvp === 'yes' ? 'Będę' : guest.rsvp === 'no' ? 'Nie będę' : 'Oczekuje',
         Array.isArray(guest.diet) ? guest.diet.join(', ') : (guest.diet || ''),
@@ -693,15 +884,12 @@ function exportCSV() {
   a.click();
 }
 
-let editingGroupId = null;
-let editGuests = [];
-
 function openEditModal(groupId) {
   const g = groups.find(g => g.id === groupId);
   if (!g) return;
 
   editingGroupId = groupId;
-  editGuests = (g.guests || []).map(guest => ({ ...guest }));
+  editGuests = (g.guests || []).map(guest => ({ ...guest, category: guest.category || 'family_bride' }));
   document.getElementById('edit-group-name').value = g.groupName;
   renderEditGuests();
   document.getElementById('edit-modal').classList.add('open');
@@ -716,30 +904,46 @@ function closeEditModal() {
 
 function renderEditGuests() {
   const list = document.getElementById('edit-guests-list');
-  list.innerHTML = editGuests.map((g, i) => `
-    <div class="modal-guest-row">
-      <input
-        class="input-field"
-        style="margin-bottom:0"
-        placeholder="${g.type === 'plus1' ? 'Imię uzupełni gość później' : 'Imię i nazwisko'}"
-        value="${escHtml(g.type === 'plus1' && g.name === 'Osoba towarzysząca' ? '' : (g.name || ''))}"
-        oninput="editGuests[${i}].name=this.value"
-      >
-      <select class="input-field" style="margin-bottom:0;max-width:150px" onchange="editGuests[${i}].type=this.value; renderEditGuests()">
-        <option value="adult" ${g.type === 'adult' ? 'selected' : ''}>Dorosły</option>
-        <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba towarzysząca</option>
-        <option value="child" ${g.type === 'child' ? 'selected' : ''}>Dziecko</option>
+  const currentGroupCategory = editGuests[0]?.category || 'family_bride';
+
+  list.innerHTML = `
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Filtr dla całej grupy</label>
+      <select class="input-field" style="margin-bottom:0" onchange="applyCategoryToAllEditGuests(this.value)">
+        ${renderCategoryOptions(currentGroupCategory)}
       </select>
-      <button class="remove-guest" onclick="removeEditGuest(${i})">×</button>
     </div>
-  `).join('');
+    ${editGuests.map((g, i) => `
+      <div class="modal-guest-row">
+        <input
+          class="input-field"
+          style="margin-bottom:0"
+          placeholder="${g.type === 'plus1' ? 'Imię uzupełni gość później' : 'Imię i nazwisko'}"
+          value="${escHtml(g.type === 'plus1' && g.name === 'Osoba towarzysząca' ? '' : (g.name || ''))}"
+          oninput="editGuests[${i}].name=this.value"
+        >
+        <select class="input-field" style="margin-bottom:0;max-width:150px" onchange="editGuests[${i}].type=this.value; renderEditGuests()">
+          <option value="adult" ${g.type === 'adult' ? 'selected' : ''}>Dorosły</option>
+          <option value="plus1" ${g.type === 'plus1' ? 'selected' : ''}>Osoba tow.</option>
+          <option value="child" ${g.type === 'child' ? 'selected' : ''}>Dziecko</option>
+        </select>
+        <select class="input-field" style="margin-bottom:0;max-width:220px" onchange="editGuests[${i}].category=this.value">
+          ${renderCategoryOptions(g.category || 'family_bride')}
+        </select>
+        <button class="remove-guest" onclick="removeEditGuest(${i})">×</button>
+      </div>
+    `).join('')}
+  `;
 }
 
 function addEditGuestRow() {
+  const selectedCategory = editGuests[0]?.category || 'family_bride';
+
   editGuests.push({
     id: 'g' + Date.now(),
     name: '',
     type: 'adult',
+    category: selectedCategory,
     rsvp: null,
     diet: '',
     notes: '',
@@ -769,6 +973,7 @@ async function saveEditGroup() {
     })
     .map(g => ({
       ...g,
+      category: g.category || 'family_bride',
       name: g.type === 'plus1' ? (g.name || 'Osoba towarzysząca') : (g.name || '').trim(),
       plus1Name: g.plus1Name || ''
     }));
@@ -780,6 +985,7 @@ async function saveEditGroup() {
 
   const statusEl = document.getElementById('edit-status');
   const g = groups.find(g => g.id === editingGroupId);
+  if (!g) return;
   g.groupName = groupName;
   g.guests = filledGuests;
 
