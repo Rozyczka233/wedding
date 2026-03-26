@@ -35,7 +35,6 @@
   }
   .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem 4rem; position: relative; z-index: 1; }
 
-  /* Hero */
   .hero { text-align: center; padding: 3.5rem 1rem 2rem; }
   .monogram {
     display: inline-flex; align-items: center; justify-content: center;
@@ -53,7 +52,6 @@
   .hero-date { font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); font-weight: 400; }
   .hero-tagline { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--text-muted); margin-top: 0.75rem; line-height: 1.6; }
 
-  /* Cards */
   .card {
     background: var(--white);
     border-radius: var(--radius);
@@ -68,7 +66,6 @@
   }
   .card-title::after { content: ''; flex: 1; height: 0.5px; background: var(--rose-light); }
 
-  /* Countdown */
   .countdown-card {
     text-align: center;
     padding: 1.2rem 1.3rem;
@@ -91,7 +88,6 @@
     font-weight: 600;
   }
 
-  /* Event info */
   .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
   .event-box {
     background: var(--cream); border-radius: 12px;
@@ -114,7 +110,6 @@
   }
   .nav-btn:hover { background: var(--rose-light); }
 
-  /* Contact */
   .contact-links { display: flex; flex-direction: column; gap: 8px; margin: 1rem 0 0.75rem; }
   .contact-btn {
     display: inline-flex; align-items: center; gap: 8px;
@@ -130,7 +125,6 @@
     font-size: 1rem; color: var(--text-muted); margin-top: 0.25rem;
   }
 
-  /* Timeline */
   .timeline { padding: 0.25rem 0; }
   .tl-item { display: flex; gap: 14px; align-items: flex-start; position: relative; padding-bottom: 1.25rem; }
   .tl-item:last-child { padding-bottom: 0; }
@@ -149,17 +143,14 @@
   .tl-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; color: var(--text); line-height: 1.2; }
   .tl-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
 
-  /* Loading state */
   .loading-state { text-align: center; padding: 3rem 1rem; }
   .loading-state p { color: var(--text-muted); font-size: 0.9rem; }
   .spinner { display: inline-block; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--rose-light); border-top-color: var(--rose); animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Error state */
   .error-state { text-align: center; padding: 2rem 1rem; }
   .error-state p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
 
-  /* Guest section */
   .guest-item {
     border: 0.5px solid var(--border); border-radius: 12px;
     padding: 1.1rem 1.1rem 1rem; margin-bottom: 0.875rem;
@@ -175,11 +166,14 @@
   }
   .guest-avatar.child-avatar { background: var(--gold-light); color: var(--gold); }
   .guest-avatar.plus1-avatar { background: #ede8f7; color: #7c68c4; border: 1.5px dashed #b5a8e0; }
-  .plus1-name-row { margin-bottom: 0.25rem; }
+  .plus1-name-row {
+    margin-top: 0.875rem;
+    padding-top: 0.875rem;
+    border-top: 0.5px solid var(--border);
+  }
   .guest-name { font-size: 0.95rem; font-weight: 500; }
   .guest-tag { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-top: 1px; }
 
-  /* RSVP buttons */
   .rsvp-btns { display: flex; gap: 6px; }
   .btn-rsvp {
     padding: 0.35rem 0.9rem; border-radius: 20px; border: 1px solid var(--border);
@@ -191,7 +185,6 @@
   .btn-rsvp.yes.active { background: #e8f5ec; border-color: #85c99a; color: #2d7a48; }
   .btn-rsvp.no.active { background: var(--rose-light); border-color: var(--rose-mid); color: var(--rose); }
 
-  /* Diet tags */
   .diet-toggle-wrap {
     margin-top: 0.875rem;
     padding-top: 0.875rem;
@@ -236,7 +229,6 @@
   .diet-notes:focus { border-color: var(--rose-mid); }
   .diet-notes::placeholder { color: var(--text-muted); }
 
-  /* Child age */
   .child-age-row { margin-top: 0.6rem; display: flex; align-items: center; gap: 8px; }
   .child-age-row label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
   .child-age-input {
@@ -246,7 +238,6 @@
   }
   .child-age-input:focus { border-color: var(--rose-mid); }
 
-  /* Extras section */
   .extras-row { display: flex; flex-direction: column; gap: 0.75rem; }
   .field-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.35rem; }
   .text-input {
@@ -260,7 +251,6 @@
   .text-input::placeholder { color: var(--text-muted); }
   textarea.text-input { resize: none; min-height: 90px; line-height: 1.5; }
 
-  /* Submit */
   .submit-btn {
     width: 100%; padding: 1rem; border: none; border-radius: var(--radius);
     background: var(--rose); color: white; font-family: 'Jost', sans-serif;
@@ -270,7 +260,6 @@
   .submit-btn:hover:not(:disabled) { background: #b36379; transform: translateY(-1px); }
   .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-  /* Success */
   .success-state { text-align: center; padding: 3rem 1rem; }
   .success-icon {
     width: 64px; height: 64px; border-radius: 50%; background: var(--rose-light);
@@ -281,7 +270,6 @@
   .success-state p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.7; }
   .edit-link { display: inline-block; margin-top: 1.5rem; font-size: 0.8rem; color: var(--rose); text-decoration: underline; cursor: pointer; }
 
-  /* Status message */
   .status-msg {
     padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; text-align: center;
     margin-bottom: 0.75rem; display: none;
@@ -348,7 +336,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTQevYhymE8Zu0ts-6SWr7XCXnPcaFaKMwJAhHSco0mDhgXM0Ipz3yLiOG8j79mTfs8Q/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJBXJ3YQPMdBPK9BOidgpJ8_T_qiMRII3ccKBVpbjktpm4plvVZ40V73KSTPQshTu_BA/exec';
 const WEDDING_DATE = '2027-06-26T17:00:00';
 const DIET_OPTIONS = [
   'Wegetariańska',
@@ -416,6 +404,7 @@ function stopCountdown() {
 
 let groupData = null;
 let formState = {};
+let isEditingExistingResponse = false;
 
 async function loadGroup() {
   const code = getCode();
@@ -445,8 +434,15 @@ async function loadGroup() {
     const resp = await fetch(`${SCRIPT_URL}?action=getGroup&code=${encodeURIComponent(code)}`);
     const data = await resp.json();
     if (data.error) throw new Error(data.error);
+
     groupData = data;
     initFormState(data);
+
+    if ((data.submittedAt || data.firstSubmittedAt) && !isEditingExistingResponse) {
+      showAlreadySubmitted();
+      return;
+    }
+
     renderForm(area);
   } catch (e) {
     area.innerHTML = `<div class="card error-state"><p>Nie udało się wczytać zaproszenia.<br><small style="color:var(--text-muted)">${escHtml(e.message)}</small></p></div>`;
@@ -461,13 +457,17 @@ function initFormState(data) {
   };
 
   data.guests.forEach(g => {
+    const guestDiet = Array.isArray(g.diet)
+      ? g.diet
+      : (g.diet ? String(g.diet).split(',').map(x => x.trim()).filter(Boolean) : []);
+
     formState.guests[g.id] = {
-      rsvp: g.rsvp,
-      diet: [...(g.diet || [])],
+      rsvp: g.rsvp ?? null,
+      diet: [...guestDiet],
       notes: g.notes || '',
       childAge: g.childAge || '',
       plus1Name: g.plus1Name || '',
-      dietOpen: Array.isArray(g.diet) ? g.diet.length > 0 : false
+      dietOpen: guestDiet.length > 0
     };
   });
 }
@@ -503,6 +503,7 @@ function renderForm(area) {
 
 function renderGuests() {
   const list = document.getElementById('guests-list');
+  if (!list) return;
   list.innerHTML = groupData.guests.map(g => guestCard(g)).join('');
 }
 
@@ -562,6 +563,8 @@ function guestCard(g) {
         </div>
       </div>
 
+      ${plus1NameHtml}
+
       ${showToggle ? `
         <div class="diet-toggle-wrap">
           <button type="button" class="diet-toggle-btn" onclick="toggleDietSection('${g.id}')">
@@ -572,8 +575,7 @@ function guestCard(g) {
 
       ${showDietSection ? `
         <div class="diet-section">
-          ${plus1NameHtml}
-          <div class="diet-label" style="margin-top:${isPlus1 ? '0.75rem' : '0'}">Dieta / Alergie</div>
+          <div class="diet-label">Dieta / Alergie</div>
           <div class="diet-tags">${dietHtml}</div>
           ${childAgeHtml}
           <textarea class="diet-notes" placeholder="Inne uwagi, alergie lub informacje dla obsługi…" onchange="setNotes('${g.id}', this.value)">${escHtml(s.notes)}</textarea>
@@ -624,6 +626,32 @@ function setPlus1Name(id, val) {
 
   if (avatarEl) avatarEl.textContent = val.trim() ? initials(val) : '+1';
   if (nameEl) nameEl.textContent = val.trim() || 'Osoba towarzysząca';
+}
+
+function enableEditMode() {
+  isEditingExistingResponse = true;
+  stopCountdown();
+  const area = document.getElementById('rsvp-area');
+  renderForm(area);
+  window.scrollTo({ top: area.offsetTop - 20, behavior: 'smooth' });
+}
+
+function showAlreadySubmitted() {
+  const area = document.getElementById('rsvp-area');
+
+  area.innerHTML = `
+    <div class="card success-state" id="success-section">
+      <div class="success-icon">♡</div>
+      <h2>Dziękujemy!</h2>
+      <p>Twoja odpowiedź już została zapisana.<br>Nie możemy się doczekać wspólnego świętowania z Wami!</p>
+      <span class="edit-link" onclick="enableEditMode()">Chcę zmienić odpowiedź</span>
+    </div>
+  `;
+
+  const successSection = document.getElementById('success-section');
+  if (successSection) {
+    successSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 async function submitForm() {
@@ -688,20 +716,21 @@ async function submitForm() {
 function showSuccess() {
   const attending = Object.values(formState.guests).filter(g => g.rsvp === 'yes').length;
   const area = document.getElementById('rsvp-area');
+  isEditingExistingResponse = false;
 
   const thankYouCard = attending > 0 ? `
     <div class="card success-state" id="success-section">
       <div class="success-icon">♡</div>
       <h2>Dziękujemy!</h2>
       <p>Twoja odpowiedź została zapisana.<br>Nie możemy się doczekać spotkania z Wami!</p>
-      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+      <span class="edit-link" onclick="enableEditMode()">Chcę zmienić odpowiedź</span>
     </div>
   ` : `
     <div class="card success-state" id="success-section">
       <div class="success-icon" style="font-size:22px">♡</div>
       <h2>Odpowiedź zapisana</h2>
       <p>Przykro nam, że nie będziecie mogli być z nami.<br>Dziękujemy za przesłanie odpowiedzi.</p>
-      <span class="edit-link" onclick="location.reload()">Chcę zmienić odpowiedź</span>
+      <span class="edit-link" onclick="enableEditMode()">Chcę zmienić odpowiedź</span>
     </div>
   `;
 
