@@ -291,7 +291,7 @@
 <script>
 const ADMIN_PASSWORD = 'wesele2027';
 const RSVP_BASE_URL = 'https://rozyczka233.github.io/wedding/gosc';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTQevYhymE8Zu0ts-6SWr7XCXnPcaFaKMwJAhHSco0mDhgXM0Ipz3yLiOG8j79mTfs8Q/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJBXJ3YQPMdBPK9BOidgpJ8_T_qiMRII3ccKBVpbjktpm4plvVZ40V73KSTPQshTu_BA/exec';
 
 const GUEST_CATEGORIES = {
   family_bride: { label: 'Rodzina Panny Młodej', badgeClass: 'family-bride' },
@@ -771,7 +771,6 @@ function generateCode(name) {
 async function saveGroup() {
   const nameEl = document.getElementById('new-group-name');
   const codeEl = document.getElementById('new-group-code');
-  const statusEl = document.getElementById('add-status');
 
   const groupName = nameEl.value.trim();
   if (!groupName) {
@@ -822,11 +821,20 @@ async function saveGroup() {
 
     groups.push(newGroup);
     newGuests = [{ name: '', type: 'adult', plus1Name: '', category: 'family_bride' }];
+
     renderAll();
-    statusEl.style.display = 'block';
-    statusEl.style.color = 'var(--green)';
-    statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
-    setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+    renderAddForm();
+
+    const statusEl = document.getElementById('add-status');
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.style.color = 'var(--green)';
+      statusEl.textContent = `Grupa "${groupName}" dodana! Kod: ${code}`;
+      setTimeout(() => {
+        const currentStatusEl = document.getElementById('add-status');
+        if (currentStatusEl) currentStatusEl.style.display = 'none';
+      }, 3000);
+    }
   } catch (e) {
     alert('Błąd zapisu: ' + e.message);
   }
